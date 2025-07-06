@@ -731,6 +731,219 @@ export class TradingService {
       updatedAt: row.updated_at,
     };
   }
+
+  /**
+   * Additional Strategy Methods
+   */
+  async getStrategy(strategyId: string): Promise<TradingStrategy | null> {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        'SELECT * FROM trading_strategies WHERE id = $1',
+        [strategyId]
+      );
+      return result.rows[0] ? this.mapToStrategy(result.rows[0]) : null;
+    } finally {
+      client.release();
+    }
+  }
+
+  async updateStrategy(strategyId: string, userId: string, updates: any): Promise<TradingStrategy | null> {
+    const client = await pool.connect();
+    try {
+      const fields: string[] = [];
+      const values: any[] = [];
+      let paramCount = 1;
+
+      if (updates.name !== undefined) {
+        fields.push(`name = $${paramCount++}`);
+        values.push(updates.name);
+      }
+      if (updates.description !== undefined) {
+        fields.push(`description = $${paramCount++}`);
+        values.push(updates.description);
+      }
+      if (updates.rules !== undefined) {
+        fields.push(`rules = $${paramCount++}`);
+        values.push(JSON.stringify(updates.rules));
+      }
+      if (updates.parameters !== undefined) {
+        fields.push(`parameters = $${paramCount++}`);
+        values.push(JSON.stringify(updates.parameters));
+      }
+      if (updates.isActive !== undefined) {
+        fields.push(`is_active = $${paramCount++}`);
+        values.push(updates.isActive);
+      }
+      if (updates.isPublic !== undefined) {
+        fields.push(`is_public = $${paramCount++}`);
+        values.push(updates.isPublic);
+      }
+
+      fields.push('updated_at = CURRENT_TIMESTAMP');
+      values.push(strategyId);
+      values.push(userId);
+
+      const result = await client.query(
+        `UPDATE trading_strategies 
+         SET ${fields.join(', ')} 
+         WHERE id = $${paramCount++} AND user_id = $${paramCount}
+         RETURNING *`,
+        values
+      );
+
+      return result.rows[0] ? this.mapToStrategy(result.rows[0]) : null;
+    } finally {
+      client.release();
+    }
+  }
+
+  async deleteStrategy(strategyId: string, userId: string): Promise<boolean> {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        'UPDATE trading_strategies SET is_active = false WHERE id = $1 AND user_id = $2',
+        [strategyId, userId]
+      );
+      return result.rowCount > 0;
+    } finally {
+      client.release();
+    }
+  }
+
+  async saveBacktestResult(strategyId: string, result: any): Promise<void> {
+    const client = await pool.connect();
+    try {
+      await client.query(
+        `UPDATE trading_strategies 
+         SET backtest_results = $1, updated_at = CURRENT_TIMESTAMP 
+         WHERE id = $2`,
+        [JSON.stringify(result), strategyId]
+      );
+    } finally {
+      client.release();
+    }
+  }
+
+  async getBacktestResults(strategyId: string, userId: string): Promise<any> {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        'SELECT backtest_results FROM trading_strategies WHERE id = $1 AND user_id = $2',
+        [strategyId, userId]
+      );
+      return result.rows[0]?.backtest_results || null;
+    } finally {
+      client.release();
+    }
+  }
+
+  async getPublicStrategies(filters: any): Promise<TradingStrategy[]> {
+    const client = await pool.connect();
+    try {
+      let query = 'SELECT * FROM trading_strategies WHERE is_public = true AND is_active = true';
+      const values: any[] = [];
+      let paramCount = 1;
+
+      if (filters.strategyType) {
+        query += ` AND strategy_type = $${paramCount++}`;
+        values.push(filters.strategyType);
+      }
+
+      if (filters.minWinRate !== undefined) {
+        query += ` AND (backtest_results->>'winRate')::float >= $${paramCount++}`;
+        values.push(filters.minWinRate);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      query += ` LIMIT $${paramCount++} OFFSET $${paramCount}`;
+      values.push(filters.limit, filters.offset);
+
+      const result = await client.query(query, values);
+      return result.rows.map(row => this.mapToStrategy(row));
+    } finally {
+      client.release();
+    }
+  }
+
+  async cloneStrategy(originalId: string, userId: string, newName?: string): Promise<TradingStrategy> {
+    const client = await pool.connect();
+    try {
+      const original = await this.getStrategy(originalId);
+      if (!original) {
+        throw new Error('Original strategy not found');
+      }
+
+      const result = await client.query(
+        `INSERT INTO trading_strategies 
+         (user_id, name, description, strategy_type, rules, parameters, is_public)
+         VALUES ($1, $2, $3, $4, $5, $6, false)
+         RETURNING *`,
+        [
+          userId,
+          newName || `${original.name} (Copy)`,
+          original.description,
+          original.strategyType,
+          JSON.stringify(original.rules),
+          original.parameters ? JSON.stringify(original.parameters) : null
+        ]
+      );
+
+      return this.mapToStrategy(result.rows[0]);
+    } finally {
+      client.release();
+    }
+  }
+
+  async getStrategyPerformance(strategyId: string, userId: string, accountId?: string, period?: string): Promise<any> {
+    const client = await pool.connect();
+    try {
+      let query = `
+        SELECT 
+          COUNT(*) as total_trades,
+          COUNT(*) FILTER (WHERE profit_loss > 0) as winning_trades,
+          AVG(profit_loss) as avg_profit_loss,
+          SUM(profit_loss) as total_profit_loss
+        FROM trades 
+        WHERE strategy_id = $1
+      `;
+      const values: any[] = [strategyId];
+      let paramCount = 2;
+
+      if (accountId) {
+        query += ` AND account_id = $${paramCount++}`;
+        values.push(accountId);
+      }
+
+      // Add period filter
+      if (period && period !== 'all') {
+        const intervals: Record<string, string> = {
+          day: '1 day',
+          week: '7 days',
+          month: '30 days',
+          year: '365 days'
+        };
+        query += ` AND open_time >= CURRENT_TIMESTAMP - INTERVAL '${intervals[period]}'`;
+      }
+
+      const result = await client.query(query, values);
+      
+      if (result.rows[0].total_trades === '0') {
+        return null;
+      }
+
+      const stats = result.rows[0];
+      return {
+        totalTrades: parseInt(stats.total_trades),
+        winningTrades: parseInt(stats.winning_trades),
+        winRate: (parseInt(stats.winning_trades) / parseInt(stats.total_trades)) * 100,
+        avgProfitLoss: parseFloat(stats.avg_profit_loss || 0),
+        totalProfitLoss: parseFloat(stats.total_profit_loss || 0)
+      };
+    } finally {
+      client.release();
+    }
+  }
 }
 
 export const tradingService = new TradingService();

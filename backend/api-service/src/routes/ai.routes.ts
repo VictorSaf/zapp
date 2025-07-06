@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { aiProviderService } from '../services/ai-provider.service.js';
-import { ollamaService } from '../services/ollama.service.js';
-import { requireAuth } from '../middleware/auth.js';
+import { aiProviderService } from '../services/ai-provider.service';
+import { ollamaService } from '../services/ollama.service';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 

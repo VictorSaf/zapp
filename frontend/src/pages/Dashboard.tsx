@@ -132,13 +132,14 @@ const Dashboard: React.FC = () => {
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
+              onClick={() => navigate('/trading')}
             >
               <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 📊
               </div>
-              <h3 className="font-semibold mb-2">Analiză piață</h3>
+              <h3 className="font-semibold mb-2">Trading Live</h3>
               <p className="text-sm text-muted-foreground">
-                Vezi analize și recomandări pentru piețele tale
+                Gestionează conturi și execută tranzacții
               </p>
             </motion.div>
 
@@ -147,13 +148,67 @@ const Dashboard: React.FC = () => {
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
+              onClick={() => navigate('/portfolio')}
             >
               <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                📈
+              </div>
+              <h3 className="font-semibold mb-2">Portfolio Analytics</h3>
+              <p className="text-sm text-muted-foreground">
+                Analizează performanța și riscurile portofoliului
+              </p>
+            </motion.div>
+          </div>
+        </FadeIn>
+
+        {/* Additional Quick Actions */}
+        <FadeIn delay={0.4} direction="up">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <motion.div
+              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => navigate('/strategies')}
+            >
+              <div className="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                🎯
+              </div>
+              <h3 className="font-semibold mb-2">Strategy Builder</h3>
+              <p className="text-sm text-muted-foreground">
+                Creează și testează strategii de trading
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => navigate('/market-data')}
+            >
+              <div className="w-12 h-12 bg-info/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                💹
+              </div>
+              <h3 className="font-semibold mb-2">Market Data</h3>
+              <p className="text-sm text-muted-foreground">
+                Prețuri real-time și indicatori tehnici
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => navigate('/education')}
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 📚
               </div>
-              <h3 className="font-semibold mb-2">Lecții educaționale</h3>
+              <h3 className="font-semibold mb-2">Educație</h3>
               <p className="text-sm text-muted-foreground">
-                Explorează materialele educaționale personalizate
+                Materiale educaționale și tutoriale
               </p>
             </motion.div>
           </div>

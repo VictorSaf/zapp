@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { DatabaseConnection } from '../config/database';
 import { ApiResponse } from '../types';
-import { socketService } from '../services/socket.service.js';
+import { socketService } from '../services/socket.service';
 import config from '../config';
 
 const router = Router();

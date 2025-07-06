@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
-import config from '../config/index.js';
-import { agentService } from './agent.service.js';
+import config from '../config';
+import { agentService } from './agent.service';
 import type { Express } from 'express';
 
 export interface AuthenticatedSocket extends Socket {

@@ -1,6 +1,6 @@
-import { DatabaseConnection } from '../config/database.js';
-import { aiProviderService } from './ai-provider.service.js';
-import type { AIMessage, AIResponse } from './ai-provider.service.js';
+import { DatabaseConnection } from '../config/database';
+import { aiProviderService } from './ai-provider.service';
+import type { AIMessage, AIResponse } from './ai-provider.service';
 
 export interface Agent {
   id: string;

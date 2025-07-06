@@ -6,11 +6,13 @@ import { DatabaseConnection } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import healthRoutes from './routes/health';
 import authRoutes from './routes/auth';
-import aiRoutes from './routes/ai.routes.js';
-import agentsRoutes from './routes/agents.routes.js';
+import aiRoutes from './routes/ai.routes';
+import agentsRoutes from './routes/agents.routes';
 import tradingRoutes from './routes/trading.routes';
 import marketDataRoutes from './routes/market-data.routes';
-import { socketService } from './services/socket.service.js';
+import strategyRoutes from './routes/strategy.routes';
+import portfolioRoutes from './routes/portfolio.routes';
+import { socketService } from './services/socket.service';
 import { createServer } from 'http';
 import config from './config';
 
@@ -55,6 +57,8 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/agents', agentsRoutes);
 app.use('/api/trading', tradingRoutes);
 app.use('/api/market-data', marketDataRoutes);
+app.use('/api/strategies', strategyRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
 // Basic root endpoint
 app.get('/', (req, res) => {

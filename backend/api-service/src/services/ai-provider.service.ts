@@ -1,4 +1,4 @@
-import { ollamaService, OllamaMessage } from './ollama.service.js';
+import { ollamaService, OllamaMessage } from './ollama.service';
 
 export interface AIMessage {
   role: 'user' | 'assistant' | 'system';

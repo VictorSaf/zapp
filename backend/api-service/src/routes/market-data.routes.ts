@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { marketDataService } from '../services/market-data.service';
-import { authMiddleware } from '../middleware/auth.middleware';
+import { authMiddleware, AuthRequest } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validation.middleware';
 import { param, query, body } from 'express-validator';
 import { Timeframe } from '../types/trading.types';

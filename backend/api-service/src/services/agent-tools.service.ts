@@ -1,4 +1,4 @@
-import { agentService } from './agent.service.js';
+import { agentService } from './agent.service';
 
 export interface ToolCall {
   id: string;

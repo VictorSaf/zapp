@@ -7,6 +7,9 @@ import PrivateRoute from './PrivateRoute';
 import Landing from '../pages/Landing';
 import Dashboard from '../pages/Dashboard';
 import Chat from '../pages/Chat';
+import Portfolio from '../pages/Portfolio';
+import Trading from '../pages/Trading';
+import { StrategyBuilder } from '../components/trading/StrategyBuilder';
 import { AuthLayout } from '../components/auth/AuthLayout';
 
 const AppRouter: React.FC = () => {
@@ -47,6 +50,33 @@ const AppRouter: React.FC = () => {
                 element={
                   <PrivateRoute>
                     <Chat />
+                  </PrivateRoute>
+                } 
+              />
+
+              <Route 
+                path="/portfolio" 
+                element={
+                  <PrivateRoute>
+                    <Portfolio />
+                  </PrivateRoute>
+                } 
+              />
+
+              <Route 
+                path="/trading" 
+                element={
+                  <PrivateRoute>
+                    <Trading />
+                  </PrivateRoute>
+                } 
+              />
+
+              <Route 
+                path="/strategies" 
+                element={
+                  <PrivateRoute>
+                    <StrategyBuilder />
                   </PrivateRoute>
                 } 
               />
