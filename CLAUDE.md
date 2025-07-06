@@ -19,11 +19,12 @@
 
 ### Workflow Obligatoriu
 1. **Citește implementare.md** pentru următorul pas
-2. **Implementează DOAR pasul curent**
-3. **Testează funcționalitatea complet**
-4. **Prezintă rezultatele utilizatorului**
-5. **Așteaptă confirmarea pentru următorul pas**
-6. **Marchează pasul ca IMPLEMENTAT cu timestamp**
+2. **VERIFICĂ STRUCTURA** înainte de orice operațiune cu fișiere/directoare
+3. **Implementează DOAR pasul curent**
+4. **Testează funcționalitatea complet**
+5. **Prezintă rezultatele utilizatorului**
+6. **Așteaptă confirmarea pentru următorul pas**
+7. **Marchează pasul ca IMPLEMENTAT cu timestamp**
 
 ### Format Raportare
 ```
@@ -36,7 +37,7 @@ TESTE: [ce teste au fost rulate și rezultat]
 ## 🏗️ Arhitectură Tehnică
 
 ### Stack Principal
-- **Frontend:** React 19 + TypeScript + Tailwind CSS + Radix UI
+- **Frontend:** React 19 + TypeScript + Tailwind CSS + Radix UI + Framer Motion
 - **Backend:** Node.js + Express (2 microservicii)
   - API Service (port 3000) - auth, users, CRUD
   - AI Orchestrator (port 3001) - agenți AI, WebSocket
@@ -47,7 +48,7 @@ TESTE: [ce teste au fost rulate și rezultat]
 ### Componente Cheie
 - **Agent 00Z** - Agentul central personal
 - **Memory Context Protocol** - Sincronizare între agenți
-- **Radix UI + Tailwind** - Design system custom
+- **Radix UI + Tailwind + Framer Motion** - Design system cu animații
 - **WebSockets** - Chat real-time
 - **Zustand** - State management
 
@@ -58,6 +59,60 @@ TESTE: [ce teste au fost rulate și rezultat]
 3. **Mobile-First** - PWA cu gesture support
 4. **Accessibility** - WCAG compliant
 5. **Performance** - Lazy loading, virtual scroll
+
+## 🎨 UI Development Guidelines
+
+### Radix UI Components
+- **OBLIGATORIU** utilizează Radix UI pentru toate componentele de bază
+- Form controls: `@radix-ui/react-form`, `@radix-ui/react-label`
+- Navigation: `@radix-ui/react-navigation-menu`, `@radix-ui/react-tabs`
+- Overlays: `@radix-ui/react-dialog`, `@radix-ui/react-toast`
+- Data display: `@radix-ui/react-avatar`, `@radix-ui/react-badge`
+
+### Framer Motion Animations
+- **Page transitions:** Smooth enter/exit animations
+- **Micro-interactions:** Button hover, focus states
+- **Loading states:** Skeleton loaders cu animații
+- **Form feedback:** Success/error state animations
+- **Chat bubbles:** Typing indicators, message appearance
+
+### Design Tokens
+```typescript
+// Culori ZAEUS
+const colors = {
+  primary: '#1a365d',    // Deep blue
+  secondary: '#2d3748',  // Dark gray
+  accent: '#ed8936',     // Orange
+  success: '#38a169',    // Green
+  warning: '#d69e2e',    // Yellow
+  error: '#e53e3e'       // Red
+}
+
+// Animații standard
+const animations = {
+  fadeIn: { opacity: [0, 1], duration: 0.3 },
+  slideUp: { y: [20, 0], opacity: [0, 1], duration: 0.4 },
+  bounceIn: { scale: [0.8, 1.05, 1], duration: 0.5 }
+}
+```
+
+### Component Structure
+```
+components/
+├── ui/           # Radix UI wrapper components
+│   ├── Button.tsx
+│   ├── Input.tsx
+│   ├── Dialog.tsx
+│   └── Toast.tsx
+├── auth/         # Authentication components
+│   ├── LoginForm.tsx
+│   ├── RegisterForm.tsx
+│   └── AuthLayout.tsx
+└── animations/   # Framer Motion components
+    ├── PageTransition.tsx
+    ├── FadeIn.tsx
+    └── SlideUp.tsx
+```
 
 ## 🔐 Securitate
 
@@ -144,10 +199,72 @@ npm run build
 4. **Întreabă utilizatorul** care este următorul pas
 5. **Urmează workflow-ul** pas cu pas
 
+## 🔍 VERIFICĂRI OBLIGATORII ÎNAINTE DE OPERAȚIUNI
+
+### ⚠️ CRITICAL: Prevenirea Duplicatelor de Directoare
+
+**ÎNTOTDEAUNA verifică structura înainte de a crea sau modifica fișiere/directoare:**
+
+```bash
+# 1. Verifică directorul curent
+pwd
+ls -la
+
+# 2. Verifică structura proiectului
+ls -la /Users/victorsafta/work/z_app/
+
+# 3. Verifică subdirectoarele specifice
+ls -la backend/
+ls -la frontend/
+
+# 4. Pentru operațiuni în backend/api-service
+ls -la backend/api-service/
+# CAUTION: Verifică că NU există backend/api-service/backend/
+
+# 5. Pentru operațiuni în frontend
+ls -la frontend/
+# CAUTION: Verifică că NU există frontend/frontend/
+```
+
+### Procedura Obligatorie Înainte de mkdir/touch/cp/mv
+
+1. **`pwd`** - Confirmă directorul curent
+2. **`ls -la`** - Verifică conținutul directorului
+3. **Planifică calea exactă** unde vrei să plasezi fișierul/directorul
+4. **Verifică că destinația nu există deja**
+5. **Execută comanda cu calea ABSOLUTĂ când este posibil**
+
+### Exemple de Verificări Corecte
+
+```bash
+# GREȘIT - poate crea duplicate
+mkdir backend/api-service
+
+# CORECT - verifică mai întâi
+ls -la backend/
+# Doar după verificare:
+mkdir backend/api-service
+
+# GREȘIT - calea relativă ambiguă
+touch src/config/database.ts
+
+# CORECT - calea absolută verificată
+ls -la /Users/victorsafta/work/z_app/backend/api-service/src/config/
+touch /Users/victorsafta/work/z_app/backend/api-service/src/config/database.ts
+```
+
+### 🚨 Red Flags - Oprește Imediat Dacă Vezi:
+
+- `backend/api-service/backend/` - Duplicat nested
+- `frontend/frontend/` - Duplicat nested  
+- Orice structură care se repetă în mod nested
+- Căi care conțin numele directorului de 2 ori consecutiv
+
 ## ⚠️ Avertismente Importante
 
 - **NICIODATĂ nu sari peste pași** din implementare.md
 - **NICIODATĂ nu implementezi multiple features** simultan
+- **ÎNTOTDEAUNA verifică structura directorului** înainte de mkdir/touch/cp/mv
 - **ÎNTOTDEAUNA testează** înainte de a marca completat
 - **ÎNTOTDEAUNA așteaptă confirmarea** utilizatorului
 

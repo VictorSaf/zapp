@@ -5,10 +5,20 @@ import morgan from 'morgan';
 import { DatabaseConnection } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import healthRoutes from './routes/health';
+import authRoutes from './routes/auth';
+import aiRoutes from './routes/ai.routes.js';
+import agentsRoutes from './routes/agents.routes.js';
+import tradingRoutes from './routes/trading.routes';
+import marketDataRoutes from './routes/market-data.routes';
+import { socketService } from './services/socket.service.js';
+import { createServer } from 'http';
 import config from './config';
 
 // Create Express application
 const app = express();
+
+// Initialize Socket.io
+socketService.initialize(app);
 
 // Security middleware
 app.use(helmet({
@@ -40,6 +50,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use('/health', healthRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/agents', agentsRoutes);
+app.use('/api/trading', tradingRoutes);
+app.use('/api/market-data', marketDataRoutes);
 
 // Basic root endpoint
 app.get('/', (req, res) => {
@@ -77,12 +92,14 @@ async function startServer() {
       process.exit(1);
     }
 
-    // Start the server
-    const server = app.listen(config.port, config.host, () => {
+    // Start the server with Socket.io
+    const httpServer = socketService.getHttpServer();
+    const server = httpServer.listen(config.port, config.host, () => {
       console.log(`✅ ZAEUS API Service is running on http://${config.host}:${config.port}`);
       console.log(`📊 Environment: ${config.nodeEnv}`);
       console.log(`🗄️  Database: ${config.database.host}:${config.database.port}/${config.database.database}`);
       console.log(`🔗 Health check: http://${config.host}:${config.port}/health`);
+      console.log(`🔌 Socket.io server ready for WebSocket connections`);
     });
 
     // Graceful shutdown

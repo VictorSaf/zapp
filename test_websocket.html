@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAEUS WebSocket Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .connected { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .disconnected { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .message {
+            background: #e7f3ff;
+            border: 1px solid #bee5eb;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 ZAEUS WebSocket Test Client</h1>
+        
+        <div id="status" class="status disconnected">
+            Disconnected
+        </div>
+
+        <div>
+            <h3>Authentication</h3>
+            <input type="text" id="token" placeholder="JWT Token" style="width: 400px;">
+            <button onclick="connect()">Connect</button>
+            <button onclick="disconnect()" disabled id="disconnectBtn">Disconnect</button>
+        </div>
+
+        <div>
+            <h3>Test Actions</h3>
+            <input type="text" id="conversationId" placeholder="Conversation ID" value="test-conv-123">
+            <button onclick="joinConversation()" disabled id="joinBtn">Join Conversation</button>
+            <button onclick="leaveConversation()" disabled id="leaveBtn">Leave Conversation</button>
+        </div>
+
+        <div>
+            <input type="text" id="messageContent" placeholder="Test message" style="width: 300px;">
+            <button onclick="sendMessage()" disabled id="sendBtn">Send Message</button>
+        </div>
+
+        <div>
+            <button onclick="startTyping()" disabled id="typingBtn">Start Typing</button>
+            <button onclick="stopTyping()" disabled id="stopTypingBtn">Stop Typing</button>
+        </div>
+
+        <div>
+            <h3>Connection Log</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        let socket = null;
+        let currentConversationId = null;
+
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        const tokenEl = document.getElementById('token');
+        const conversationIdEl = document.getElementById('conversationId');
+        const messageContentEl = document.getElementById('messageContent');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logEl.textContent += `[${timestamp}] ${message}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateStatus(connected, message) {
+            statusEl.className = connected ? 'status connected' : 'status disconnected';
+            statusEl.textContent = message;
+            
+            // Update button states
+            document.getElementById('disconnectBtn').disabled = !connected;
+            document.getElementById('joinBtn').disabled = !connected;
+            document.getElementById('leaveBtn').disabled = !connected;
+            document.getElementById('sendBtn').disabled = !connected;
+            document.getElementById('typingBtn').disabled = !connected;
+            document.getElementById('stopTypingBtn').disabled = !connected;
+        }
+
+        function connect() {
+            const token = tokenEl.value.trim();
+            if (!token) {
+                alert('Please enter a JWT token');
+                return;
+            }
+
+            log('Attempting to connect to WebSocket...');
+            
+            socket = io('http://localhost:3000', {
+                auth: {
+                    token: token
+                },
+                transports: ['websocket', 'polling']
+            });
+
+            socket.on('connect', () => {
+                log('✅ Connected to ZAEUS WebSocket server');
+                updateStatus(true, 'Connected');
+            });
+
+            socket.on('disconnect', (reason) => {
+                log(`❌ Disconnected: ${reason}`);
+                updateStatus(false, `Disconnected: ${reason}`);
+            });
+
+            socket.on('connect_error', (error) => {
+                log(`❌ Connection error: ${error.message}`);
+                updateStatus(false, `Connection error: ${error.message}`);
+            });
+
+            socket.on('connection-established', (data) => {
+                log(`🎉 Connection established: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('message-received', (data) => {
+                log(`💬 Message received: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('user-typing', (data) => {
+                log(`⌨️ User typing: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('agent-typing', (data) => {
+                log(`🤖 Agent typing: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('user-joined-conversation', (data) => {
+                log(`👥 User joined: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('user-left-conversation', (data) => {
+                log(`👋 User left: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('message-error', (data) => {
+                log(`❌ Message error: ${JSON.stringify(data)}`);
+            });
+
+            socket.on('agent-error', (data) => {
+                log(`❌ Agent error: ${JSON.stringify(data)}`);
+            });
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                log('Disconnected from WebSocket server');
+                updateStatus(false, 'Disconnected');
+            }
+        }
+
+        function joinConversation() {
+            const conversationId = conversationIdEl.value.trim();
+            if (!conversationId) {
+                alert('Please enter a conversation ID');
+                return;
+            }
+
+            currentConversationId = conversationId;
+            socket.emit('join-conversation', conversationId);
+            log(`📥 Joining conversation: ${conversationId}`);
+        }
+
+        function leaveConversation() {
+            if (!currentConversationId) {
+                alert('Not in a conversation');
+                return;
+            }
+
+            socket.emit('leave-conversation', currentConversationId);
+            log(`📤 Leaving conversation: ${currentConversationId}`);
+            currentConversationId = null;
+        }
+
+        function sendMessage() {
+            if (!currentConversationId) {
+                alert('Please join a conversation first');
+                return;
+            }
+
+            const content = messageContentEl.value.trim();
+            if (!content) {
+                alert('Please enter a message');
+                return;
+            }
+
+            const messageData = {
+                conversationId: currentConversationId,
+                content: content,
+                agentId: 'agent_00z'
+            };
+
+            socket.emit('send-message', messageData);
+            log(`📤 Sending message: ${content}`);
+            messageContentEl.value = '';
+        }
+
+        function startTyping() {
+            if (!currentConversationId) {
+                alert('Please join a conversation first');
+                return;
+            }
+
+            socket.emit('typing-start', { conversationId: currentConversationId });
+            log(`⌨️ Started typing in conversation: ${currentConversationId}`);
+        }
+
+        function stopTyping() {
+            if (!currentConversationId) {
+                alert('Please join a conversation first');
+                return;
+            }
+
+            socket.emit('typing-stop', { conversationId: currentConversationId });
+            log(`⌨️ Stopped typing in conversation: ${currentConversationId}`);
+        }
+
+        function clearLog() {
+            logEl.textContent = '';
+        }
+
+        // Initial status
+        updateStatus(false, 'Not connected');
+        log('WebSocket test client ready. Enter JWT token and click Connect.');
+    </script>
+</body>
+</html>

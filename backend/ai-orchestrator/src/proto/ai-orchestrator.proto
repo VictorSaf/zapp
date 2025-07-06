@@ -1,0 +1,307 @@
+syntax = "proto3";
+
+package ai_orchestrator;
+
+// AI Orchestrator Service
+service AIOrchestrator {
+  // Agent Operations
+  rpc ProcessAgentRequest(AgentRequest) returns (AgentResponse);
+  rpc SwitchAgent(AgentSwitchRequest) returns (AgentSwitchResponse);
+  rpc GetActiveAgents(GetActiveAgentsRequest) returns (GetActiveAgentsResponse);
+  
+  // Orchestration Operations
+  rpc OrchestrateTasks(OrchestrationRequest) returns (OrchestrationResponse);
+  rpc GetTaskStatus(TaskStatusRequest) returns (TaskStatusResponse);
+  rpc CancelTask(CancelTaskRequest) returns (CancelTaskResponse);
+  
+  // Memory Context Operations
+  rpc StoreContext(StoreContextRequest) returns (StoreContextResponse);
+  rpc GetContext(GetContextRequest) returns (GetContextResponse);
+  rpc UpdateContext(UpdateContextRequest) returns (UpdateContextResponse);
+  
+  // Health Check
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Agent Request/Response Messages
+message AgentRequest {
+  string agent_id = 1;
+  string user_id = 2;
+  string conversation_id = 3;
+  repeated Message messages = 4;
+  map<string, string> context = 5;
+  AgentConfig config = 6;
+}
+
+message AgentResponse {
+  string response_id = 1;
+  string agent_id = 2;
+  string content = 3;
+  string model_used = 4;
+  string provider = 5;
+  int64 processing_time_ms = 6;
+  int32 token_count = 7;
+  double cost_usd = 8;
+  ResponseStatus status = 9;
+  map<string, string> metadata = 10;
+}
+
+message AgentConfig {
+  string model = 1;
+  double temperature = 2;
+  int32 max_tokens = 3;
+  repeated string tools = 4;
+  map<string, string> parameters = 5;
+}
+
+// Agent Switch Messages
+message AgentSwitchRequest {
+  string conversation_id = 1;
+  string from_agent_id = 2;
+  string to_agent_id = 3;
+  string reason = 4;
+  string user_id = 5;
+}
+
+message AgentSwitchResponse {
+  bool success = 1;
+  string message = 2;
+  string switch_id = 3;
+  int64 timestamp = 4;
+}
+
+// Active Agents Messages
+message GetActiveAgentsRequest {
+  string user_id = 1;
+  repeated string agent_types = 2;
+}
+
+message GetActiveAgentsResponse {
+  repeated AgentInfo agents = 1;
+  int32 total_count = 2;
+}
+
+message AgentInfo {
+  string agent_id = 1;
+  string agent_name = 2;
+  string agent_type = 3;
+  string display_name = 4;
+  string description = 5;
+  repeated string capabilities = 6;
+  bool is_active = 7;
+  AgentStatus status = 8;
+  map<string, string> metadata = 9;
+}
+
+// Orchestration Messages
+message OrchestrationRequest {
+  string task_id = 1;
+  string user_id = 2;
+  string conversation_id = 3;
+  TaskType task_type = 4;
+  repeated AgentTask agent_tasks = 5;
+  OrchestrationStrategy strategy = 6;
+  int32 timeout_seconds = 7;
+  map<string, string> context = 8;
+}
+
+message OrchestrationResponse {
+  string orchestration_id = 1;
+  bool success = 2;
+  repeated AgentTaskResult results = 3;
+  string final_result = 4;
+  int64 total_processing_time = 5;
+  OrchestrationStatus status = 6;
+  string error_message = 7;
+}
+
+message AgentTask {
+  string task_id = 1;
+  string agent_id = 2;
+  string task_description = 3;
+  repeated Message input_messages = 4;
+  map<string, string> parameters = 5;
+  int32 priority = 6;
+}
+
+message AgentTaskResult {
+  string task_id = 1;
+  string agent_id = 2;
+  bool success = 3;
+  string result = 4;
+  string error_message = 5;
+  int64 processing_time = 6;
+  map<string, string> metadata = 7;
+}
+
+// Task Status Messages
+message TaskStatusRequest {
+  string task_id = 1;
+  string user_id = 2;
+}
+
+message TaskStatusResponse {
+  string task_id = 1;
+  TaskStatus status = 2;
+  double progress_percentage = 3;
+  repeated AgentTaskStatus agent_statuses = 4;
+  int64 elapsed_time = 5;
+  int64 estimated_completion = 6;
+}
+
+message AgentTaskStatus {
+  string agent_id = 1;
+  string task_id = 2;
+  TaskStatus status = 3;
+  double progress = 4;
+  string current_operation = 5;
+}
+
+// Cancel Task Messages
+message CancelTaskRequest {
+  string task_id = 1;
+  string user_id = 2;
+  string reason = 3;
+}
+
+message CancelTaskResponse {
+  bool success = 1;
+  string message = 2;
+  int64 timestamp = 3;
+}
+
+// Context Messages
+message StoreContextRequest {
+  string context_id = 1;
+  string user_id = 2;
+  string agent_id = 3;
+  string conversation_id = 4;
+  ContextType context_type = 5;
+  bytes context_data = 6;
+  map<string, string> metadata = 7;
+  int64 ttl_seconds = 8;
+}
+
+message StoreContextResponse {
+  bool success = 1;
+  string context_id = 2;
+  string message = 3;
+  int64 timestamp = 4;
+}
+
+message GetContextRequest {
+  string context_id = 1;
+  string user_id = 2;
+  string agent_id = 3;
+  string conversation_id = 4;
+  ContextType context_type = 5;
+}
+
+message GetContextResponse {
+  bool found = 1;
+  string context_id = 2;
+  bytes context_data = 3;
+  map<string, string> metadata = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message UpdateContextRequest {
+  string context_id = 1;
+  string user_id = 2;
+  bytes context_data = 3;
+  map<string, string> metadata = 4;
+}
+
+message UpdateContextResponse {
+  bool success = 1;
+  string message = 2;
+  int64 timestamp = 3;
+}
+
+// Common Messages
+message Message {
+  string id = 1;
+  string role = 2;
+  string content = 3;
+  int64 timestamp = 4;
+  map<string, string> metadata = 5;
+}
+
+// Health Check Messages
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  HealthStatus status = 1;
+  string message = 2;
+  int64 timestamp = 3;
+  map<string, string> details = 4;
+}
+
+// Enums
+enum ResponseStatus {
+  SUCCESS = 0;
+  ERROR = 1;
+  TIMEOUT = 2;
+  RATE_LIMITED = 3;
+  INVALID_INPUT = 4;
+}
+
+enum AgentStatus {
+  IDLE = 0;
+  PROCESSING = 1;
+  BUSY = 2;
+  ERROR_STATE = 3;
+  MAINTENANCE = 4;
+}
+
+enum TaskType {
+  SINGLE_AGENT = 0;
+  MULTI_AGENT_SEQUENTIAL = 1;
+  MULTI_AGENT_PARALLEL = 2;
+  MULTI_AGENT_COLLABORATIVE = 3;
+  AGENT_CHAIN = 4;
+}
+
+enum OrchestrationStrategy {
+  ROUND_ROBIN = 0;
+  PRIORITY_BASED = 1;
+  CAPABILITY_BASED = 2;
+  LOAD_BALANCED = 3;
+  OPTIMAL_ASSIGNMENT = 4;
+}
+
+enum OrchestrationStatus {
+  PENDING = 0;
+  RUNNING = 1;
+  COMPLETED = 2;
+  FAILED = 3;
+  CANCELLED = 4;
+  TIMEOUT_EXCEEDED = 5;
+}
+
+enum TaskStatus {
+  QUEUED = 0;
+  IN_PROGRESS = 1;
+  COMPLETED_SUCCESS = 2;
+  COMPLETED_ERROR = 3;
+  CANCELLED = 4;
+  TIMEOUT = 5;
+}
+
+enum ContextType {
+  CONVERSATION = 0;
+  AGENT_MEMORY = 1;
+  USER_PREFERENCES = 2;
+  SHARED_CONTEXT = 3;
+  TEMPORARY = 4;
+}
+
+enum HealthStatus {
+  HEALTHY = 0;
+  DEGRADED = 1;
+  UNHEALTHY = 2;
+  UNKNOWN = 3;
+}

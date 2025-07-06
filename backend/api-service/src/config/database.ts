@@ -48,7 +48,31 @@ export class DatabaseConnection {
     }
   }
 
+  public async query(text: string, params?: any[]): Promise<any> {
+    try {
+      const result = await this.pool.query(text, params);
+      return result;
+    } catch (error) {
+      console.error('Database query error:', error);
+      throw error;
+    }
+  }
+
   public async close(): Promise<void> {
     await this.pool.end();
   }
 }
+
+// Export a function to get the pool instance
+export function getPool(): Pool {
+  const dbConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'zaeus_dev',
+    user: process.env.DB_USER || 'zaeus_app',
+    password: process.env.DB_PASSWORD || 'zaeus_secure_password_2024'
+  };
+  return DatabaseConnection.getInstance(dbConfig).getPool();
+}
+
+export const pool = getPool();

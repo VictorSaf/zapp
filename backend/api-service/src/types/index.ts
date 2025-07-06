@@ -54,4 +54,9 @@ export interface AppConfig {
   bcrypt: {
     rounds: number;
   };
+  ollama: {
+    baseUrl: string;
+    timeout: number;
+    defaultModel: string;
+  };
 }

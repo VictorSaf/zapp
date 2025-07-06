@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { DatabaseConnection } from '../config/database';
 import { ApiResponse } from '../types';
+import { socketService } from '../services/socket.service.js';
 import config from '../config';
 
 const router = Router();
@@ -30,6 +31,12 @@ router.get('/', async (req: Request, res: Response) => {
         host: config.database.host,
         port: config.database.port,
         database: config.database.database,
+      },
+      websocket: {
+        connected: socketService.getIo() !== null,
+        connectedUsers: socketService.getStats().connectedUsers,
+        activeConversations: socketService.getStats().activeConversations,
+        totalConnections: socketService.getStats().totalConnections,
       },
     };
 
@@ -99,6 +106,12 @@ router.get('/detailed', async (req: Request, res: Response) => {
         port: config.database.port,
         database: config.database.database,
         queryTime: `${dbQueryTime}ms`,
+      },
+      websocket: {
+        initialized: socketService.getIo() !== null,
+        connectedUsers: socketService.getStats().connectedUsers,
+        activeConversations: socketService.getStats().activeConversations,
+        totalConnections: socketService.getStats().totalConnections,
       },
       process: {
         pid: process.pid,

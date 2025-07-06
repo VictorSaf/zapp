@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  ai-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "50051:50051"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - GRPC_PORT=50051
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - JWT_SECRET=your-jwt-secret-key
+      - PROMETHEUS_PORT=9090
+    depends_on:
+      - redis
+      - consul
+      - prometheus
+    networks:
+      - ai-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - ai-network
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  consul:
+    image: consul:1.15
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    networks:
+      - ai-network
+    volumes:
+      - consul_data:/consul/data
+    command: >
+      consul agent
+      -server
+      -bootstrap-expect=1
+      -data-dir=/consul/data
+      -config-dir=/consul/config
+      -ui
+      -client=0.0.0.0
+      -bind=0.0.0.0
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    networks:
+      - ai-network
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  consul_data:
+  prometheus_data:
+
+networks:
+  ai-network:
+    driver: bridge

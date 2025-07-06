@@ -2,7 +2,7 @@
 
 **Data:** 3 iulie 2025\
 **Autor:** Victor Safta\
-**Stack:** Node.js + Express | React + TypeScript | PostgreSQL + Redis | OpenAI GPT-3.5 / Claude | Ollama (LLaMA 3.2, Mistral) | Tailwind CSS | AntV G2Plot | WebSockets | Bull Queue
+**Stack:** Node.js + Express | React + TypeScript | PostgreSQL + Redis | OpenAI GPT-3.5 / Claude | Ollama (LLaMA 3.2, Mistral) | Tailwind CSS + Radix UI + Framer Motion | AntV G2Plot | WebSockets | Bull Queue
 
 ---
 

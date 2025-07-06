@@ -23,16 +23,25 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.10",
     "@types/pg": "^8.15.4",
+    "@types/socket.io": "^3.0.1",
+    "@types/ws": "^8.18.1",
+    "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.1",
+    "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
+    "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.10",
     "pg": "^8.16.3",
+    "socket.io": "^4.8.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "winston": "^3.17.0",
+    "ws": "^8.18.3"
   }
 }
