@@ -1,221 +1,402 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import { Button } from '../components/ui/Button';
-import FadeIn from '../components/animations/FadeIn';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useAuthStore } from '../stores/auth.store'
+import { Button } from '../components/ui/Button'
+import { config } from '../config/env'
+import { PageTransition, FadeIn, SlideUp, StaggerChildren } from '../components/animations'
+import { AnimatedCard, InteractiveCard } from '../components/ui/AnimatedCard'
+import { AnimatedModal, ModalFooter } from '../components/ui/AnimatedModal'
+import { AnimatedTooltip, IconTooltip } from '../components/ui/AnimatedTooltip'
+import { AnimatedTabs, TabPanel } from '../components/ui/AnimatedTabs'
+import { AnimatedLoader, SkeletonLoader } from '../components/ui/AnimatedLoader'
+import { ThemeSwitcher } from '../components/ui/ThemeSwitcher'
+import { ScrollProgress } from '../components/ui/ScrollProgress'
+import { cn } from '../utils/cn'
 
-const Dashboard: React.FC = () => {
-  const { user, profile, logout } = useAuthStore();
-  const navigate = useNavigate();
+export const Dashboard: React.FC = () => {
+  const navigate = useNavigate()
+  const { user, isAuthenticated, logout, loadUser } = useAuthStore()
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    // Load user data if we have a token but no user data
+    if (!user && isAuthenticated) {
+      loadUser()
+    }
+    
+    // Force reload user data if is_admin is missing
+    if (user && user.is_admin === undefined && isAuthenticated) {
+      console.log('is_admin missing, reloading user data...')
+      loadUser()
+    }
+    
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      navigate('/login')
+    }
+
+    // Debug user data
+    console.log('Dashboard user data:', user)
+    console.log('Is admin?', user?.is_admin)
+
+    // Simulate loading activity
+    const timer = setTimeout(() => {
+      setIsLoadingActivity(false)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [user, isAuthenticated, navigate, loadUser])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
+    await logout()
+    navigate('/login')
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <AnimatedLoader size="lg" variant="dots" text="Se încarcă..." />
+      </div>
+    )
+  }
+
+  const dashboardTabs = [
+    {
+      id: 'overview',
+      label: 'Prezentare Generală',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      content: (
+        <TabPanel>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <AnimatedCard animationType="slideUp" delay={0.1}>
+              <div className="p-4">
+                <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Conversații</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+              </div>
+            </AnimatedCard>
+            <AnimatedCard animationType="slideUp" delay={0.2}>
+              <div className="p-4">
+                <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Ore de Învățare</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+              </div>
+            </AnimatedCard>
+            <AnimatedCard animationType="slideUp" delay={0.3}>
+              <div className="p-4">
+                <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Nivel Cunoștințe</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">Începător</p>
+              </div>
+            </AnimatedCard>
+          </div>
+        </TabPanel>
+      )
+    },
+    {
+      id: 'progress',
+      label: 'Progresul Tău',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        </svg>
+      ),
+      content: (
+        <TabPanel>
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <p>Începe să înveți pentru a-ți vedea progresul aici!</p>
+          </div>
+        </TabPanel>
+      )
     }
-  };
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
-      <div className="container mx-auto px-4 py-8">
+    <PageTransition>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+        {/* Scroll Progress Indicator */}
+        <ScrollProgress />
+        
         {/* Header */}
-        <FadeIn delay={0.1}>
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-primary mb-2">
-                Bine ai revenit, {user?.first_name}!
-              </h1>
-              <p className="text-muted-foreground">
-                Explorează piețele financiare cu ajutorul AI-ului ZAEUS
-              </p>
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={cn(
+            "sticky top-0 z-40 transition-all duration-300",
+            "bg-white dark:bg-gray-800 border-b dark:border-gray-700",
+            isScrolled ? [
+              "shadow-md backdrop-blur-lg",
+              "bg-white/90 dark:bg-gray-800/90",
+              "border-gray-200/50 dark:border-gray-700/50"
+            ] : [
+              "shadow-sm",
+              "bg-white/95 dark:bg-gray-800/95"
+            ]
+          )}>
+        <div className={cn(
+          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300",
+          isScrolled ? "py-3" : "py-4"
+        )}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{config.APP_NAME}</h1>
+              <span className="text-gray-500 dark:text-gray-400 transition-colors">Dashboard</span>
             </div>
             
-            <Button 
-              variant="outline" 
-              onClick={handleLogout}
-              motionProps={{
-                whileHover: { scale: 1.05 },
-                whileTap: { scale: 0.95 }
-              }}
-            >
-              Ieșire
-            </Button>
-          </div>
-        </FadeIn>
-
-        {/* User Info Card */}
-        <FadeIn delay={0.2} direction="up">
-          <motion.div
-            className="bg-background rounded-lg border shadow-lg p-6 mb-8"
-            whileHover={{ y: -5, boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-            transition={{ duration: 0.2 }}
-          >
-            <h2 className="text-xl font-semibold mb-4">Profilul tău</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">
-                  Informații de bază
-                </h3>
-                <div className="space-y-2">
-                  <p><span className="font-medium">Nume:</span> {user?.first_name} {user?.last_name}</p>
-                  <p><span className="font-medium">Email:</span> {user?.email}</p>
-                  <p><span className="font-medium">Cont verificat:</span> 
-                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                      user?.email_verified 
-                        ? 'bg-success/10 text-success' 
-                        : 'bg-warning/10 text-warning'
-                    }`}>
-                      {user?.email_verified ? 'Verificat' : 'Neverificat'}
+            <div className="flex items-center space-x-4">
+              <ThemeSwitcher variant="buttons" showLabel={false} />
+              
+              {user.is_admin && (
+                <AnimatedTooltip content="Setări Admin">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/settings')}
+                    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-all duration-200 group"
+                  >
+                    <svg className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-primary dark:group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </motion.button>
+                </AnimatedTooltip>
+              )}
+              
+              <div className="text-right mr-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Bine ai venit,</p>
+                <p className="font-medium text-gray-900 dark:text-white flex items-center justify-end">
+                  {user.first_name} {user.last_name}
+                  {user.is_admin && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary rounded-full">
+                      Admin
                     </span>
-                  </p>
-                  <p><span className="font-medium">2FA:</span> 
-                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                      user?.two_factor_enabled 
-                        ? 'bg-success/10 text-success' 
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      {user?.two_factor_enabled ? 'Activat' : 'Dezactivat'}
-                    </span>
-                  </p>
-                </div>
+                  )}
+                </p>
               </div>
               
-              {profile && (
-                <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-2">
-                    Profil trading
-                  </h3>
-                  <div className="space-y-2">
-                    <p><span className="font-medium">Experiență:</span> 
-                      <span className="capitalize ml-2">{profile.trading_experience}</span>
-                    </p>
-                    <p><span className="font-medium">Toleranță risc:</span> 
-                      <span className="capitalize ml-2">{profile.risk_tolerance}</span>
-                    </p>
-                    <p><span className="font-medium">Piețe preferate:</span> 
-                      <span className="ml-2">{profile.preferred_markets?.join(', ')}</span>
-                    </p>
-                    <p><span className="font-medium">Temă:</span> 
-                      <span className="capitalize ml-2">{profile.theme}</span>
-                    </p>
-                  </div>
-                </div>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+              >
+                Deconectare
+              </Button>
             </div>
-          </motion.div>
-        </FadeIn>
+          </div>
+        </div>
+        </motion.header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Card */}
+        <AnimatedCard variant="hover" animationType="slideUp" delay={0.2} className="p-6 mb-8">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                Salut {user.first_name}! 👋
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Bine ai venit în ZAEUS - asistentul tău AI pentru trading. 
+                Sunt aici să te ajut să înveți, să analizezi piețele și să-ți îmbunătățești strategiile de tranzacționare.
+              </p>
+              
+              <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <span>Email: {user.email}</span>
+                {user.email_verified && (
+                  <AnimatedTooltip content="Email verificat">
+                    <span className="text-green-600 dark:text-green-400">✓ Verificat</span>
+                  </AnimatedTooltip>
+                )}
+              </div>
+            </div>
+            <IconTooltip content="Click pentru mai multe detalii" />
+          </div>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowWelcomeModal(true)}
+            className="mt-4 text-sm text-primary hover:text-primary/80 font-medium"
+          >
+            Află mai multe despre ZAEUS →
+          </motion.button>
+        </AnimatedCard>
 
         {/* Quick Actions */}
-        <FadeIn delay={0.3} direction="up">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/chat')}
-            >
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                🤖
+        <StaggerChildren className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <InteractiveCard 
+            className="p-6 cursor-pointer"
+            onClick={() => navigate('/chat')}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
               </div>
-              <h3 className="font-semibold mb-2">Chat cu Agent 00Z</h3>
-              <p className="text-sm text-muted-foreground">
-                Începe o conversație cu agentul tău personal AI
-              </p>
+              <span className="text-xs text-green-600 dark:text-green-400 font-medium">Activ</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Chat cu 00Z</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+              Începe o conversație cu agentul tău personal AI
+            </p>
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-center text-sm text-primary font-medium"
+            >
+              <span>Deschide Chat</span>
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </motion.div>
+          </InteractiveCard>
 
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/trading')}
-            >
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                📊
+          <InteractiveCard className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-              <h3 className="font-semibold mb-2">Trading Live</h3>
-              <p className="text-sm text-muted-foreground">
-                Gestionează conturi și execută tranzacții
-              </p>
-            </motion.div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">Coming Soon</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Analiză Piață</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Vezi analize și predicții pentru piețele tale preferate
+            </p>
+          </InteractiveCard>
 
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/portfolio')}
-            >
-              <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                📈
+          <InteractiveCard className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
               </div>
-              <h3 className="font-semibold mb-2">Portfolio Analytics</h3>
-              <p className="text-sm text-muted-foreground">
-                Analizează performanța și riscurile portofoliului
-              </p>
-            </motion.div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">Coming Soon</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Educație</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Cursuri și materiale educaționale personalizate
+            </p>
+          </InteractiveCard>
+        </StaggerChildren>
+
+        {/* Dashboard Tabs */}
+        <AnimatedCard className="p-6 mb-8" animationType="fadeIn" delay={0.4}>
+          <AnimatedTabs tabs={dashboardTabs} variant="pills" />
+        </AnimatedCard>
+
+        {/* Recent Activity */}
+        <AnimatedCard variant="default" animationType="fadeIn" delay={0.6} className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Activitate Recentă</h3>
+          {isLoadingActivity ? (
+            <SkeletonLoader count={3} className="h-12" />
+          ) : (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <motion.svg 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.8, type: "spring", stiffness: 200, damping: 20 }}
+                className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </motion.svg>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+              >
+                Nu ai activitate recentă
+              </motion.p>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="text-sm mt-2"
+              >
+                Începe o conversație cu 00Z pentru a vedea activitatea ta aici
+              </motion.p>
+            </div>
+          )}
+        </AnimatedCard>
+      </main>
+
+      {/* Welcome Modal */}
+      <AnimatedModal
+        isOpen={showWelcomeModal}
+        onClose={() => setShowWelcomeModal(false)}
+        title="Despre ZAEUS"
+        size="lg"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            ZAEUS este mai mult decât un simplu asistent AI - este mentorul tău personal în lumea tradingului.
+          </p>
+          
+          <div className="space-y-3">
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-blue-600 dark:text-blue-300 font-semibold">1</span>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">Învățare Personalizată</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Conținut adaptat nivelului tău de experiență</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-green-600 dark:text-green-300 font-semibold">2</span>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">Analiză în Timp Real</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Monitorizează piețele și primește alerte personalizate</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-purple-600 dark:text-purple-300 font-semibold">3</span>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">Comunitate Activă</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Conectează-te cu alți traderi și împărtășește experiențe</p>
+              </div>
+            </div>
           </div>
-        </FadeIn>
-
-        {/* Additional Quick Actions */}
-        <FadeIn delay={0.4} direction="up">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/strategies')}
-            >
-              <div className="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                🎯
-              </div>
-              <h3 className="font-semibold mb-2">Strategy Builder</h3>
-              <p className="text-sm text-muted-foreground">
-                Creează și testează strategii de trading
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/market-data')}
-            >
-              <div className="w-12 h-12 bg-info/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                💹
-              </div>
-              <h3 className="font-semibold mb-2">Market Data</h3>
-              <p className="text-sm text-muted-foreground">
-                Prețuri real-time și indicatori tehnici
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="bg-background rounded-lg border p-6 text-center cursor-pointer"
-              whileHover={{ scale: 1.02, y: -5 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => navigate('/education')}
-            >
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                📚
-              </div>
-              <h3 className="font-semibold mb-2">Educație</h3>
-              <p className="text-sm text-muted-foreground">
-                Materiale educaționale și tutoriale
-              </p>
-            </motion.div>
-          </div>
-        </FadeIn>
-      </div>
+        </div>
+        
+        <ModalFooter>
+          <Button variant="outline" onClick={() => setShowWelcomeModal(false)}>
+            Am înțeles
+          </Button>
+          <Button onClick={() => {
+            setShowWelcomeModal(false)
+            // Navigate to chat when implemented
+          }}>
+            Începe cu 00Z
+          </Button>
+        </ModalFooter>
+      </AnimatedModal>
     </div>
-  );
-};
-
-export default Dashboard;
+    </PageTransition>
+  )
+}

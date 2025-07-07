@@ -687,7 +687,7 @@ export class SocketService {
 
       // Update conversation in database
       const updateQuery = `
-        UPDATE zaeus_core.conversations 
+        UPDATE public.conversations 
         SET 
           ${title ? 'title = $2,' : ''}
           ${isArchived !== undefined ? 'is_archived = $' + (title ? '3' : '2') + ',' : ''}

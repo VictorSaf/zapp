@@ -22,6 +22,7 @@ export interface LoginResponse {
       last_name: string;
       email_verified: boolean;
       two_factor_enabled: boolean;
+      is_admin?: boolean;
     };
     token: string;
     expires_in: string;
@@ -120,7 +121,8 @@ export class AuthService {
             first_name: user.first_name,
             last_name: user.last_name,
             email_verified: user.email_verified,
-            two_factor_enabled: user.two_factor_enabled
+            two_factor_enabled: user.two_factor_enabled,
+            ...(user.is_admin !== undefined && { is_admin: user.is_admin })
           },
           token,
           expires_in: config.jwt.expiresIn

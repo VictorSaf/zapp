@@ -61,6 +61,14 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+test-*.js
+test-*.html
+test-*.json
+*.bak
+*-backup/
+frontend-backup/
+doc1/
+audit*/
 
 # AI & ML models cache
 .ollama/

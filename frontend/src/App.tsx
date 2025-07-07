@@ -1,8 +1,12 @@
-import React from 'react';
-import AppRouter from './router/AppRouter';
+import { BrowserRouter as Router } from 'react-router-dom'
+import { AnimatedRoutes } from './components/AnimatedRoutes'
 
 function App() {
-  return <AppRouter />;
+  return (
+    <Router>
+      <AnimatedRoutes />
+    </Router>
+  )
 }
 
-export default App;
+export default App

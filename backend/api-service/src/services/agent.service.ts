@@ -74,7 +74,7 @@ export class AgentService {
         id, agent_name, agent_type, display_name, description,
         personality_prompt, capabilities, model_config, is_active,
         created_at, updated_at
-      FROM zaeus_core.ai_agents 
+      FROM public.ai_agents 
       WHERE is_active = true
       ORDER BY created_at ASC
     `;
@@ -92,7 +92,7 @@ export class AgentService {
         id, agent_name, agent_type, display_name, description,
         personality_prompt, capabilities, model_config, is_active,
         created_at, updated_at
-      FROM zaeus_core.ai_agents 
+      FROM public.ai_agents 
       WHERE id = $1 AND is_active = true
     `;
     
@@ -109,7 +109,7 @@ export class AgentService {
         id, agent_name, agent_type, display_name, description,
         personality_prompt, capabilities, model_config, is_active,
         created_at, updated_at
-      FROM zaeus_core.ai_agents 
+      FROM public.ai_agents 
       WHERE agent_name = $1 AND is_active = true
     `;
     
@@ -136,7 +136,7 @@ export class AgentService {
     }
 
     const query = `
-      INSERT INTO zaeus_core.conversations (
+      INSERT INTO public.conversations (
         user_id, title, conversation_type, active_agent_id,
         context_summary, metadata, is_archived
       ) VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -162,7 +162,7 @@ export class AgentService {
    */
   async getUserConversations(userId: string, limit = 50): Promise<Conversation[]> {
     const query = `
-      SELECT * FROM zaeus_core.conversations 
+      SELECT * FROM public.conversations 
       WHERE user_id = $1 AND is_archived = false
       ORDER BY last_activity_at DESC
       LIMIT $2
@@ -203,7 +203,7 @@ export class AgentService {
     } = params;
 
     // Get conversation to get user_id for encryption
-    const convQuery = 'SELECT user_id FROM zaeus_core.conversations WHERE id = $1';
+    const convQuery = 'SELECT user_id FROM public.conversations WHERE id = $1';
     const convResult = await this.db.query(convQuery, [conversationId]);
     const conversationUserId = convResult.rows[0]?.user_id;
 
@@ -212,7 +212,7 @@ export class AgentService {
     }
 
     const query = `
-      INSERT INTO zaeus_core.messages (
+      INSERT INTO public.messages (
         conversation_id, user_id, agent_id, content_encrypted, content_hash,
         message_type, role, model_used, model_provider, processing_time_ms,
         token_count, cost_usd
@@ -243,7 +243,7 @@ export class AgentService {
 
     // Update conversation last activity
     await this.db.query(
-      'UPDATE zaeus_core.conversations SET last_activity_at = CURRENT_TIMESTAMP WHERE id = $1',
+      'UPDATE public.conversations SET last_activity_at = CURRENT_TIMESTAMP WHERE id = $1',
       [conversationId]
     );
 
@@ -261,9 +261,9 @@ export class AgentService {
         m.processing_time_ms, m.token_count, m.cost_usd, m.created_at,
         decrypt_message_content(m.content_encrypted, c.user_id) as content,
         a.display_name as agent_name
-      FROM zaeus_core.messages m
-      JOIN zaeus_core.conversations c ON m.conversation_id = c.id
-      LEFT JOIN zaeus_core.ai_agents a ON m.agent_id = a.id
+      FROM public.messages m
+      JOIN public.conversations c ON m.conversation_id = c.id
+      LEFT JOIN public.ai_agents a ON m.agent_id = a.id
       WHERE m.conversation_id = $1
       ORDER BY m.created_at ASC
       LIMIT $2
@@ -284,7 +284,7 @@ export class AgentService {
     // Get total count
     const countQuery = `
       SELECT COUNT(*) as total_count
-      FROM zaeus_core.messages m
+      FROM public.messages m
       WHERE m.conversation_id = $1
     `;
     
@@ -299,9 +299,9 @@ export class AgentService {
         m.processing_time_ms, m.token_count, m.cost_usd, m.created_at,
         decrypt_message_content(m.content_encrypted, c.user_id) as content,
         a.display_name as agent_name
-      FROM zaeus_core.messages m
-      JOIN zaeus_core.conversations c ON m.conversation_id = c.id
-      LEFT JOIN zaeus_core.ai_agents a ON m.agent_id = a.id
+      FROM public.messages m
+      JOIN public.conversations c ON m.conversation_id = c.id
+      LEFT JOIN public.ai_agents a ON m.agent_id = a.id
       WHERE m.conversation_id = $1
       ORDER BY m.created_at DESC
       LIMIT $2 OFFSET $3
@@ -384,7 +384,7 @@ export class AgentService {
         memory_type, memory_key,
         decrypt_memory_value(memory_value_encrypted, user_id) as memory_value,
         importance_score
-      FROM zaeus_core.agent_memory
+      FROM public.agent_memory
       WHERE agent_id = $1 AND user_id = $2
       ORDER BY importance_score DESC, last_accessed_at DESC
       LIMIT 10
@@ -433,7 +433,7 @@ export class AgentService {
 
       // Update access count for existing memories
       await this.db.query(
-        `UPDATE zaeus_core.agent_memory 
+        `UPDATE public.agent_memory 
          SET access_count = access_count + 1, last_accessed_at = CURRENT_TIMESTAMP
          WHERE agent_id = $1 AND user_id = $2`,
         [agentId, userId]
@@ -468,7 +468,7 @@ export class AgentService {
     } = params;
 
     const query = `
-      INSERT INTO zaeus_core.agent_memory (
+      INSERT INTO public.agent_memory (
         user_id, agent_id, memory_type, memory_key,
         memory_value_encrypted, memory_metadata, importance_score, expires_at
       ) VALUES ($1, $2, $3, $4, encrypt_memory_value($5, $1), $6, $7, $8)
@@ -496,7 +496,7 @@ export class AgentService {
    */
   async switchAgent(conversationId: string, newAgentId: string, reason?: string): Promise<void> {
     // Get current conversation
-    const convQuery = 'SELECT * FROM zaeus_core.conversations WHERE id = $1';
+    const convQuery = 'SELECT * FROM public.conversations WHERE id = $1';
     const convResult = await this.db.query(convQuery, [conversationId]);
     const conversation = convResult.rows[0];
 
@@ -508,13 +508,13 @@ export class AgentService {
 
     // Update conversation
     await this.db.query(
-      'UPDATE zaeus_core.conversations SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+      'UPDATE public.conversations SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
       [newAgentId, conversationId]
     );
 
     // Log agent switch
     await this.db.query(
-      `INSERT INTO zaeus_core.agent_switches (
+      `INSERT INTO public.agent_switches (
         conversation_id, user_id, from_agent_id, to_agent_id, switch_reason, switch_trigger
       ) VALUES ($1, $2, $3, $4, $5, $6)`,
       [

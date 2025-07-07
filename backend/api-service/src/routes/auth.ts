@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { AuthService, LoginRequest } from '../services/authService';
 import { UserService } from '../services/userService';
 import { CreateUserRequest } from '../types/user';
@@ -16,7 +16,7 @@ const authService = new AuthService();
 const userService = new UserService();
 
 // POST /api/auth/login
-router.post('/login', loginRateLimiter, async (req: Request, res: Response) => {
+router.post('/login', loginRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, remember_me }: LoginRequest = req.body;
 
@@ -53,12 +53,12 @@ router.post('/login', loginRateLimiter, async (req: Request, res: Response) => {
 
     res.json(result);
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // POST /api/auth/register
-router.post('/register', registerRateLimiter, async (req: Request, res: Response) => {
+router.post('/register', registerRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { 
       email, 
@@ -129,12 +129,12 @@ router.post('/register', registerRateLimiter, async (req: Request, res: Response
       message: 'User registered and logged in successfully'
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // POST /api/auth/logout
-router.post('/logout', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/logout', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.slice(7); // Remove 'Bearer ' prefix
     
@@ -145,12 +145,12 @@ router.post('/logout', authGeneralRateLimiter, requireAuth, async (req: Authenti
     const result = await authService.logout(req.user.id, token);
     res.json(result);
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // POST /api/auth/logout-all
-router.post('/logout-all', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/logout-all', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
       throw createError('Authentication required', 401);
@@ -159,12 +159,12 @@ router.post('/logout-all', authGeneralRateLimiter, requireAuth, async (req: Auth
     const result = await authService.logoutAll(req.user.id);
     res.json(result);
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // GET /api/auth/me
-router.get('/me', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+router.get('/me', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
       throw createError('Authentication required', 401);
@@ -186,12 +186,12 @@ router.get('/me', authGeneralRateLimiter, requireAuth, async (req: Authenticated
       message: 'User profile retrieved successfully'
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // GET /api/auth/sessions
-router.get('/sessions', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+router.get('/sessions', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
       throw createError('Authentication required', 401);
@@ -205,12 +205,12 @@ router.get('/sessions', authGeneralRateLimiter, requireAuth, async (req: Authent
       message: 'User sessions retrieved successfully'
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
 // POST /api/auth/verify-token
-router.post('/verify-token', authGeneralRateLimiter, async (req: Request, res: Response) => {
+router.post('/verify-token', authGeneralRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.slice(7); // Remove 'Bearer ' prefix
     

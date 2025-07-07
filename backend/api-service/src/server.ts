@@ -8,10 +8,12 @@ import healthRoutes from './routes/health';
 import authRoutes from './routes/auth';
 import aiRoutes from './routes/ai.routes';
 import agentsRoutes from './routes/agents.routes';
-import tradingRoutes from './routes/trading.routes';
-import marketDataRoutes from './routes/market-data.routes';
-import strategyRoutes from './routes/strategy.routes';
-import portfolioRoutes from './routes/portfolio.routes';
+import settingsRoutes from './routes/settings';
+import conversationsRoutes from './routes/conversations-simple';
+// import tradingRoutes from './routes/trading.routes';
+// import marketDataRoutes from './routes/market-data.routes';
+// import strategyRoutes from './routes/strategy.routes';
+// import portfolioRoutes from './routes/portfolio.routes';
 import { socketService } from './services/socket.service';
 import { createServer } from 'http';
 import config from './config';
@@ -37,7 +39,22 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: config.cors.allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost and LAN access
+    if (origin.includes('localhost') || 
+        origin.includes('127.0.0.1') || 
+        origin.includes('192.168.') || 
+        origin.includes('10.0.') ||
+        origin.includes('172.16.') ||
+        config.cors.allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -55,10 +72,12 @@ app.use('/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/agents', agentsRoutes);
-app.use('/api/trading', tradingRoutes);
-app.use('/api/market-data', marketDataRoutes);
-app.use('/api/strategies', strategyRoutes);
-app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/conversations', conversationsRoutes);
+// app.use('/api/trading', tradingRoutes);
+// app.use('/api/market-data', marketDataRoutes);
+// app.use('/api/strategies', strategyRoutes);
+// app.use('/api/portfolio', portfolioRoutes);
 
 // Basic root endpoint
 app.get('/', (req, res) => {

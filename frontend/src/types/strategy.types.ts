@@ -1,4 +1,4 @@
-import { Timeframe } from './trading.types';
+import type { Timeframe } from './trading.types';
 
 export interface TradingStrategy {
   id: string;

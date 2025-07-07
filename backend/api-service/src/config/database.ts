@@ -66,11 +66,11 @@ export class DatabaseConnection {
 // Export a function to get the pool instance
 export function getPool(): Pool {
   const dbConfig = {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    database: process.env.DB_NAME || 'zaeus_dev',
-    user: process.env.DB_USER || 'zaeus_app',
-    password: process.env.DB_PASSWORD || 'zaeus_secure_password_2024'
+    host: process.env.POSTGRES_HOST || 'localhost',
+    port: parseInt(process.env.POSTGRES_PORT || '5432'),
+    database: process.env.POSTGRES_DB || 'zaeus_db',
+    user: process.env.POSTGRES_USER || 'zaeus_user',
+    password: process.env.POSTGRES_PASSWORD || 'zaeus_password'
   };
   return DatabaseConnection.getInstance(dbConfig).getPool();
 }

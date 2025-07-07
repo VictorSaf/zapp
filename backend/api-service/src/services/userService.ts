@@ -169,7 +169,8 @@ export class UserService {
       failed_login_attempts: row.failed_login_attempts,
       locked_until: row.locked_until,
       two_factor_enabled: row.two_factor_enabled,
-      two_factor_secret: row.two_factor_secret
+      two_factor_secret: row.two_factor_secret,
+      is_admin: row.is_admin
     });
 
     const profile: UserProfile = {

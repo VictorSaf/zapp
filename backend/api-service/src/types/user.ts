@@ -18,6 +18,7 @@ export interface User {
   locked_until?: Date;
   two_factor_enabled: boolean;
   two_factor_secret?: string;
+  is_admin?: boolean;
 }
 
 export interface UserProfile {
@@ -60,6 +61,7 @@ export interface PublicUser {
   is_active: boolean;
   email_verified: boolean;
   two_factor_enabled: boolean;
+  is_admin?: boolean;
 }
 
 // Create user request
