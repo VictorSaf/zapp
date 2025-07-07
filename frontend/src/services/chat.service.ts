@@ -27,7 +27,7 @@ export interface MessageResponse {
 
 class ChatService {
   private getAuthHeaders() {
-    const token = localStorage.getItem('auth-token')
+    const token = localStorage.getItem('zaeus_token')
     return {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
