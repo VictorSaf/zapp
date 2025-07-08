@@ -55,27 +55,91 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
   const [checkboxChecked, setCheckboxChecked] = React.useState(true)
   const [inputValue, setInputValue] = React.useState('')
   const [selectValue, setSelectValue] = React.useState('option1')
+  
+  // State for variant selection
+  const [selectedButtonVariant, setSelectedButtonVariant] = React.useState<'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'>('primary')
+  const [selectedButtonSize, setSelectedButtonSize] = React.useState<'sm' | 'md' | 'lg'>('md')
+  const [selectedCardVariant, setSelectedCardVariant] = React.useState<'default' | 'hover' | 'interactive'>('default')
+  const [selectedCardAnimation, setSelectedCardAnimation] = React.useState<'fadeIn' | 'slideUp' | 'scaleIn'>('fadeIn')
+  const [selectedTabVariant, setSelectedTabVariant] = React.useState<'default' | 'pills' | 'underline'>('pills')
+  const [selectedLoaderVariant, setSelectedLoaderVariant] = React.useState<'spinner' | 'dots' | 'bars'>('spinner')
+  const [selectedLoaderSize, setSelectedLoaderSize] = React.useState<'sm' | 'md' | 'lg'>('md')
+  const [selectedAlertType, setSelectedAlertType] = React.useState<'info' | 'success' | 'warning' | 'error'>('info')
+  const [selectedThemeVariant, setSelectedThemeVariant] = React.useState<'dropdown' | 'toggle' | 'buttons'>('dropdown')
+  const [selectedModalSize, setSelectedModalSize] = React.useState<'sm' | 'md' | 'lg' | 'xl' | 'full'>('md')
 
   const renderPreview = () => {
     switch (componentName) {
       case 'Button':
         return (
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              <Button variant="primary" size="md">Primary Button</Button>
-              <Button variant="secondary" size="md">Secondary</Button>
-              <Button variant="outline" size="md">Outline</Button>
-              <Button variant="ghost" size="md">Ghost</Button>
-              <Button variant="destructive" size="md">Destructive</Button>
+          <div className="space-y-6">
+            {/* Variant Selector */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Varianta
+                </label>
+                <Select
+                  value={selectedButtonVariant}
+                  onChange={(e) => setSelectedButtonVariant(e.target.value as any)}
+                  options={[
+                    { value: 'primary', label: 'Primary' },
+                    { value: 'secondary', label: 'Secondary' },
+                    { value: 'outline', label: 'Outline' },
+                    { value: 'ghost', label: 'Ghost' },
+                    { value: 'destructive', label: 'Destructive' }
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Mărimea
+                </label>
+                <Select
+                  value={selectedButtonSize}
+                  onChange={(e) => setSelectedButtonSize(e.target.value as any)}
+                  options={[
+                    { value: 'sm', label: 'Small' },
+                    { value: 'md', label: 'Medium' },
+                    { value: 'lg', label: 'Large' }
+                  ]}
+                />
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button variant="primary" size="sm">Small</Button>
-              <Button variant="primary" size="md">Medium</Button>
-              <Button variant="primary" size="lg">Large</Button>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu varianta selectată:</p>
+              <div className="flex flex-wrap gap-3 items-center">
+                <Button variant={selectedButtonVariant} size={selectedButtonSize}>
+                  Button Normal
+                </Button>
+                <Button variant={selectedButtonVariant} size={selectedButtonSize} disabled>
+                  Button Disabled
+                </Button>
+                <Button variant={selectedButtonVariant} size={selectedButtonSize} loading>
+                  Loading
+                </Button>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button variant="primary" disabled>Disabled</Button>
-              <Button variant="primary" loading>Loading</Button>
+
+            {/* All Variants Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate variantele:</p>
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="primary" size="md">Primary</Button>
+                  <Button variant="secondary" size="md">Secondary</Button>
+                  <Button variant="outline" size="md">Outline</Button>
+                  <Button variant="ghost" size="md">Ghost</Button>
+                  <Button variant="destructive" size="md">Destructive</Button>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant={selectedButtonVariant} size="sm">Small</Button>
+                  <Button variant={selectedButtonVariant} size="md">Medium</Button>
+                  <Button variant={selectedButtonVariant} size="lg">Large</Button>
+                </div>
+              </div>
             </div>
           </div>
         )
@@ -179,55 +243,157 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
 
       case 'AnimatedCard':
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <AnimatedCard variant="default" animationType="fadeIn">
-              <div className="p-4">
-                <h3 className="font-semibold mb-2">Default Card</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Basic card with fade in animation
-                </p>
+          <div className="space-y-6">
+            {/* Variant Selector */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Varianta Card
+                </label>
+                <Select
+                  value={selectedCardVariant}
+                  onChange={(e) => setSelectedCardVariant(e.target.value as any)}
+                  options={[
+                    { value: 'default', label: 'Default' },
+                    { value: 'hover', label: 'Hover' },
+                    { value: 'interactive', label: 'Interactive' }
+                  ]}
+                />
               </div>
-            </AnimatedCard>
-            <AnimatedCard variant="hover" animationType="slideUp">
-              <div className="p-4">
-                <h3 className="font-semibold mb-2">Hover Card</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Card with hover effects and slide up
-                </p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Animația
+                </label>
+                <Select
+                  value={selectedCardAnimation}
+                  onChange={(e) => setSelectedCardAnimation(e.target.value as any)}
+                  options={[
+                    { value: 'fadeIn', label: 'Fade In' },
+                    { value: 'slideUp', label: 'Slide Up' },
+                    { value: 'scaleIn', label: 'Scale In' }
+                  ]}
+                />
               </div>
-            </AnimatedCard>
-            <AnimatedCard variant="interactive" animationType="scaleIn">
-              <div className="p-4">
-                <h3 className="font-semibold mb-2">Interactive Card</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Click me! Scale in animation
-                </p>
+            </div>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu varianta selectată:</p>
+              <AnimatedCard variant={selectedCardVariant} animationType={selectedCardAnimation}>
+                <div className="p-6">
+                  <h3 className="font-semibold mb-2">Card cu {selectedCardVariant} / {selectedCardAnimation}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Acesta este un card cu varianta {selectedCardVariant} și animație {selectedCardAnimation}.
+                    {selectedCardVariant === 'hover' && ' Treci cu mouse-ul peste card pentru efecte.'}
+                    {selectedCardVariant === 'interactive' && ' Click pe card pentru interacțiune.'}
+                  </p>
+                </div>
+              </AnimatedCard>
+            </div>
+
+            {/* All Variants Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate variantele:</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <AnimatedCard variant="default" animationType="fadeIn">
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2">Default Card</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Basic card cu fade in
+                    </p>
+                  </div>
+                </AnimatedCard>
+                <AnimatedCard variant="hover" animationType="slideUp">
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2">Hover Card</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Card cu efecte hover și slide up
+                    </p>
+                  </div>
+                </AnimatedCard>
+                <AnimatedCard variant="interactive" animationType="scaleIn">
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2">Interactive Card</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Click me! Scale in animation
+                    </p>
+                  </div>
+                </AnimatedCard>
               </div>
-            </AnimatedCard>
+            </div>
           </div>
         )
 
       case 'AnimatedModal':
         return (
-          <div>
-            <Button onClick={() => setShowModal(true)}>
-              Open Modal Preview
-            </Button>
+          <div className="space-y-6">
+            {/* Variant Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Selectează Mărimea Modal
+              </label>
+              <Select
+                value={selectedModalSize}
+                onChange={(e) => setSelectedModalSize(e.target.value as any)}
+                options={[
+                  { value: 'sm', label: 'Small' },
+                  { value: 'md', label: 'Medium' },
+                  { value: 'lg', label: 'Large' },
+                  { value: 'xl', label: 'Extra Large' },
+                  { value: 'full', label: 'Full Width' }
+                ]}
+              />
+            </div>
+
+            {/* Live Preview */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu mărimea selectată:</p>
+              <Button onClick={() => setShowModal(true)}>
+                Deschide Modal ({selectedModalSize})
+              </Button>
+            </div>
+
+            {/* All Sizes Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate mărimile disponibile:</p>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" size="sm" onClick={() => { setSelectedModalSize('sm'); setShowModal(true); }}>
+                  Small Modal
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedModalSize('md'); setShowModal(true); }}>
+                  Medium Modal
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedModalSize('lg'); setShowModal(true); }}>
+                  Large Modal
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedModalSize('xl'); setShowModal(true); }}>
+                  XL Modal
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedModalSize('full'); setShowModal(true); }}>
+                  Full Modal
+                </Button>
+              </div>
+            </div>
+
+            {/* Modal Instance */}
             <AnimatedModal
               isOpen={showModal}
               onClose={() => setShowModal(false)}
-              title="Modal Preview"
-              size="md"
+              title={`Modal Preview - ${selectedModalSize.toUpperCase()}`}
+              size={selectedModalSize}
             >
               <p className="text-gray-600 dark:text-gray-300">
-                This is a modal dialog with animations and backdrop blur effect.
+                Acesta este un dialog modal cu mărimea <strong>{selectedModalSize}</strong>.
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Modal-ul include animații smooth și efect de blur pe fundal.
               </p>
               <ModalFooter>
                 <Button variant="outline" onClick={() => setShowModal(false)}>
-                  Cancel
+                  Anulează
                 </Button>
                 <Button variant="primary" onClick={() => setShowModal(false)}>
-                  Confirm
+                  Confirmă
                 </Button>
               </ModalFooter>
             </AnimatedModal>
@@ -236,73 +402,206 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
 
       case 'AnimatedTabs':
         return (
-          <AnimatedTabs
-            variant="pills"
-            tabs={[
-              {
-                id: 'tab1',
-                label: 'First Tab',
-                icon: <span>📋</span>,
-                content: (
-                  <TabPanel>
-                    <p>Content for the first tab with icon</p>
-                  </TabPanel>
-                )
-              },
-              {
-                id: 'tab2',
-                label: 'Second Tab',
-                icon: <span>⚙️</span>,
-                content: (
-                  <TabPanel>
-                    <p>Content for the second tab</p>
-                  </TabPanel>
-                )
-              },
-              {
-                id: 'tab3',
-                label: 'Third Tab',
-                icon: <span>📊</span>,
-                content: (
-                  <TabPanel>
-                    <p>Content for the third tab</p>
-                  </TabPanel>
-                )
-              }
-            ]}
-          />
+          <div className="space-y-6">
+            {/* Variant Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Selectează Stilul Tabs
+              </label>
+              <Select
+                value={selectedTabVariant}
+                onChange={(e) => setSelectedTabVariant(e.target.value as any)}
+                options={[
+                  { value: 'default', label: 'Default' },
+                  { value: 'pills', label: 'Pills' },
+                  { value: 'underline', label: 'Underline' }
+                ]}
+              />
+            </div>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu stilul selectat:</p>
+              <AnimatedTabs
+                variant={selectedTabVariant}
+                tabs={[
+                  {
+                    id: 'tab1',
+                    label: 'Primul Tab',
+                    icon: <span>📋</span>,
+                    content: (
+                      <TabPanel>
+                        <p>Conținut pentru primul tab cu stilul <strong>{selectedTabVariant}</strong></p>
+                      </TabPanel>
+                    )
+                  },
+                  {
+                    id: 'tab2',
+                    label: 'Al Doilea Tab',
+                    icon: <span>⚙️</span>,
+                    content: (
+                      <TabPanel>
+                        <p>Conținut pentru al doilea tab</p>
+                      </TabPanel>
+                    )
+                  },
+                  {
+                    id: 'tab3',
+                    label: 'Al Treilea Tab',
+                    icon: <span>📊</span>,
+                    content: (
+                      <TabPanel>
+                        <p>Conținut pentru al treilea tab</p>
+                      </TabPanel>
+                    )
+                  }
+                ]}
+              />
+            </div>
+
+            {/* All Variants Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate stilurile disponibile:</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Click pe butoane pentru a schimba stilul preview-ului de mai sus</p>
+              <div className="flex flex-wrap gap-3">
+                <Button 
+                  variant={selectedTabVariant === 'default' ? 'primary' : 'outline'} 
+                  size="sm" 
+                  onClick={() => setSelectedTabVariant('default')}
+                >
+                  Default Style
+                </Button>
+                <Button 
+                  variant={selectedTabVariant === 'pills' ? 'primary' : 'outline'} 
+                  size="sm" 
+                  onClick={() => setSelectedTabVariant('pills')}
+                >
+                  Pills Style
+                </Button>
+                <Button 
+                  variant={selectedTabVariant === 'underline' ? 'primary' : 'outline'} 
+                  size="sm" 
+                  onClick={() => setSelectedTabVariant('underline')}
+                >
+                  Underline Style
+                </Button>
+              </div>
+            </div>
+          </div>
         )
 
       case 'AnimatedLoader':
         return (
           <div className="space-y-6">
-            <div className="flex items-center gap-8">
-              <div className="text-center">
-                <AnimatedLoader size="sm" variant="spinner" />
-                <p className="text-sm mt-2">Small Spinner</p>
+            {/* Variant Selectors */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Tipul Loader
+                </label>
+                <Select
+                  value={selectedLoaderVariant}
+                  onChange={(e) => setSelectedLoaderVariant(e.target.value as any)}
+                  options={[
+                    { value: 'spinner', label: 'Spinner' },
+                    { value: 'dots', label: 'Dots' },
+                    { value: 'bars', label: 'Bars' }
+                  ]}
+                />
               </div>
-              <div className="text-center">
-                <AnimatedLoader size="md" variant="dots" />
-                <p className="text-sm mt-2">Medium Dots</p>
-              </div>
-              <div className="text-center">
-                <AnimatedLoader size="lg" variant="bars" />
-                <p className="text-sm mt-2">Large Bars</p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Mărimea
+                </label>
+                <Select
+                  value={selectedLoaderSize}
+                  onChange={(e) => setSelectedLoaderSize(e.target.value as any)}
+                  options={[
+                    { value: 'sm', label: 'Small' },
+                    { value: 'md', label: 'Medium' },
+                    { value: 'lg', label: 'Large' }
+                  ]}
+                />
               </div>
             </div>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Preview cu varianta selectată:</p>
+              <div className="flex flex-col items-center space-y-4">
+                <AnimatedLoader size={selectedLoaderSize} variant={selectedLoaderVariant} />
+                <AnimatedLoader size={selectedLoaderSize} variant={selectedLoaderVariant} text="Se încarcă..." />
+              </div>
+            </div>
+
+            {/* All Variants Display */}
             <div>
-              <AnimatedLoader size="md" variant="spinner" text="Loading data..." />
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate variantele:</p>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center space-y-4">
+                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Spinner</p>
+                  <AnimatedLoader size="sm" variant="spinner" />
+                  <AnimatedLoader size="md" variant="spinner" />
+                  <AnimatedLoader size="lg" variant="spinner" />
+                </div>
+                <div className="text-center space-y-4">
+                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Dots</p>
+                  <AnimatedLoader size="sm" variant="dots" />
+                  <AnimatedLoader size="md" variant="dots" />
+                  <AnimatedLoader size="lg" variant="dots" />
+                </div>
+                <div className="text-center space-y-4">
+                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Bars</p>
+                  <AnimatedLoader size="sm" variant="bars" />
+                  <AnimatedLoader size="md" variant="bars" />
+                  <AnimatedLoader size="lg" variant="bars" />
+                </div>
+              </div>
             </div>
           </div>
         )
 
       case 'Alert':
         return (
-          <div className="space-y-3">
-            <Alert type="info" title="Information" message="This is an informational alert" />
-            <Alert type="success" title="Success!" message="Operation completed successfully" />
-            <Alert type="warning" title="Warning" message="Please review before proceeding" />
-            <Alert type="error" title="Error" message="Something went wrong" dismissible />
+          <div className="space-y-6">
+            {/* Variant Selector */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Selectează Tipul Alert
+              </label>
+              <Select
+                value={selectedAlertType}
+                onChange={(e) => setSelectedAlertType(e.target.value as any)}
+                options={[
+                  { value: 'info', label: 'Info' },
+                  { value: 'success', label: 'Success' },
+                  { value: 'warning', label: 'Warning' },
+                  { value: 'error', label: 'Error' }
+                ]}
+              />
+            </div>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu tipul selectat:</p>
+              <Alert 
+                type={selectedAlertType} 
+                title={`${selectedAlertType.charAt(0).toUpperCase() + selectedAlertType.slice(1)} Alert`}
+                message={`Acesta este un mesaj de tip ${selectedAlertType}. Poate fi dismissible sau nu.`}
+                dismissible 
+              />
+            </div>
+
+            {/* All Variants Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate tipurile de alerte:</p>
+              <div className="space-y-3">
+                <Alert type="info" title="Informație" message="Acesta este un alert informațional" />
+                <Alert type="success" title="Succes!" message="Operațiunea a fost completată cu succes" />
+                <Alert type="warning" title="Avertizare" message="Te rugăm să verifici înainte de a continua" />
+                <Alert type="error" title="Eroare" message="Ceva nu a funcționat corect" dismissible />
+              </div>
+            </div>
           </div>
         )
 
@@ -323,17 +622,47 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
       case 'ThemeSwitcher':
         return (
           <div className="space-y-6">
+            {/* Variant Selector */}
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Dropdown variant:</p>
-              <ThemeSwitcher variant="dropdown" />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Selectează Stilul Theme Switcher
+              </label>
+              <Select
+                value={selectedThemeVariant}
+                onChange={(e) => setSelectedThemeVariant(e.target.value as any)}
+                options={[
+                  { value: 'dropdown', label: 'Dropdown' },
+                  { value: 'toggle', label: 'Toggle' },
+                  { value: 'buttons', label: 'Buttons' }
+                ]}
+              />
             </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Toggle variant:</p>
-              <ThemeSwitcher variant="toggle" />
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu stilul selectat:</p>
+              <div className="flex justify-center">
+                <ThemeSwitcher variant={selectedThemeVariant} />
+              </div>
             </div>
+
+            {/* All Variants Display */}
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Buttons variant:</p>
-              <ThemeSwitcher variant="buttons" />
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toate stilurile disponibile:</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Dropdown:</p>
+                  <ThemeSwitcher variant="dropdown" />
+                </div>
+                <div className="text-center space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Toggle:</p>
+                  <ThemeSwitcher variant="toggle" />
+                </div>
+                <div className="text-center space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Buttons:</p>
+                  <ThemeSwitcher variant="buttons" />
+                </div>
+              </div>
             </div>
           </div>
         )
