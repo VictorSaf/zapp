@@ -88,6 +88,23 @@ export const componentRegistry: ComponentInfo[] = [
     icon: '🎴'
   },
   {
+    name: 'Card',
+    category: 'ui',
+    description: 'Card component flexibil cu sub-componente pentru structură complexă',
+    props: ['variant', 'padding', 'onClick', 'className'],
+    usedIn: ['Settings', 'Dashboard', 'ComponentShowcase'],
+    features: [
+      'Variante: default, interactive, outline',
+      'Sub-componente: CardHeader, CardTitle, CardBadge, CardDescription, CardFooter',
+      'Padding flexibil: none, sm, md, lg',
+      'Motion animations pentru varianta interactivă',
+      'Dark mode support',
+      'Composable architecture'
+    ],
+    variants: ['default', 'interactive', 'outline'],
+    icon: '🃏'
+  },
+  {
     name: 'AnimatedModal',
     category: 'feedback',
     description: 'Modal dialog cu backdrop și animații',

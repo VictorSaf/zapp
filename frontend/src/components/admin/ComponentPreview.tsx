@@ -5,6 +5,7 @@ import { Input } from '../ui/Input'
 import { Select } from '../ui/Select'
 import { Checkbox } from '../ui/Checkbox'
 import { AnimatedCard } from '../ui/AnimatedCard'
+import { Card, CardHeader, CardTitle, CardBadge, CardDescription, CardFooter, CardContent } from '../ui/Card'
 import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { AnimatedTabs, TabPanel } from '../ui/AnimatedTabs'
 import { AnimatedLoader } from '../ui/AnimatedLoader'
@@ -59,8 +60,10 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
   // State for variant selection
   const [selectedButtonVariant, setSelectedButtonVariant] = React.useState<'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'>('primary')
   const [selectedButtonSize, setSelectedButtonSize] = React.useState<'sm' | 'md' | 'lg'>('md')
-  const [selectedCardVariant, setSelectedCardVariant] = React.useState<'default' | 'hover' | 'interactive'>('default')
-  const [selectedCardAnimation, setSelectedCardAnimation] = React.useState<'fadeIn' | 'slideUp' | 'scaleIn'>('fadeIn')
+  const [selectedCardVariant, setSelectedCardVariant] = React.useState<'default' | 'interactive' | 'outline'>('default')
+  const [selectedCardPadding, setSelectedCardPadding] = React.useState<'none' | 'sm' | 'md' | 'lg'>('md')
+  const [selectedAnimatedCardVariant, setSelectedAnimatedCardVariant] = React.useState<'default' | 'hover' | 'interactive'>('default')
+  const [selectedAnimatedCardAnimation, setSelectedAnimatedCardAnimation] = React.useState<'fadeIn' | 'slideUp' | 'scaleIn'>('fadeIn')
   const [selectedTabVariant, setSelectedTabVariant] = React.useState<'default' | 'pills' | 'underline'>('pills')
   const [selectedLoaderVariant, setSelectedLoaderVariant] = React.useState<'spinner' | 'dots' | 'bars'>('spinner')
   const [selectedLoaderSize, setSelectedLoaderSize] = React.useState<'sm' | 'md' | 'lg'>('md')
@@ -251,8 +254,8 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
                   Selectează Varianta Card
                 </label>
                 <Select
-                  value={selectedCardVariant}
-                  onChange={(e) => setSelectedCardVariant(e.target.value as any)}
+                  value={selectedAnimatedCardVariant}
+                  onChange={(e) => setSelectedAnimatedCardVariant(e.target.value as any)}
                   options={[
                     { value: 'default', label: 'Default' },
                     { value: 'hover', label: 'Hover' },
@@ -265,8 +268,8 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
                   Selectează Animația
                 </label>
                 <Select
-                  value={selectedCardAnimation}
-                  onChange={(e) => setSelectedCardAnimation(e.target.value as any)}
+                  value={selectedAnimatedCardAnimation}
+                  onChange={(e) => setSelectedAnimatedCardAnimation(e.target.value as any)}
                   options={[
                     { value: 'fadeIn', label: 'Fade In' },
                     { value: 'slideUp', label: 'Slide Up' },
@@ -279,13 +282,13 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
             {/* Live Preview with Selected Variant */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu varianta selectată:</p>
-              <AnimatedCard variant={selectedCardVariant} animationType={selectedCardAnimation}>
+              <AnimatedCard variant={selectedAnimatedCardVariant} animationType={selectedAnimatedCardAnimation}>
                 <div className="p-6">
-                  <h3 className="font-semibold mb-2">Card cu {selectedCardVariant} / {selectedCardAnimation}</h3>
+                  <h3 className="font-semibold mb-2">Card cu {selectedAnimatedCardVariant} / {selectedAnimatedCardAnimation}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Acesta este un card cu varianta {selectedCardVariant} și animație {selectedCardAnimation}.
-                    {selectedCardVariant === 'hover' && ' Treci cu mouse-ul peste card pentru efecte.'}
-                    {selectedCardVariant === 'interactive' && ' Click pe card pentru interacțiune.'}
+                    Acesta este un card cu varianta {selectedAnimatedCardVariant} și animație {selectedAnimatedCardAnimation}.
+                    {selectedAnimatedCardVariant === 'hover' && ' Treci cu mouse-ul peste card pentru efecte.'}
+                    {selectedAnimatedCardVariant === 'interactive' && ' Click pe card pentru interacțiune.'}
                   </p>
                 </div>
               </AnimatedCard>
@@ -319,6 +322,177 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
                     </p>
                   </div>
                 </AnimatedCard>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'Card':
+        return (
+          <div className="space-y-6">
+            {/* Variant Selectors */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Varianta
+                </label>
+                <Select
+                  value={selectedCardVariant}
+                  onChange={(e) => setSelectedCardVariant(e.target.value as any)}
+                  options={[
+                    { value: 'default', label: 'Default' },
+                    { value: 'interactive', label: 'Interactive' },
+                    { value: 'outline', label: 'Outline' }
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selectează Padding
+                </label>
+                <Select
+                  value={selectedCardPadding}
+                  onChange={(e) => setSelectedCardPadding(e.target.value as any)}
+                  options={[
+                    { value: 'none', label: 'None' },
+                    { value: 'sm', label: 'Small' },
+                    { value: 'md', label: 'Medium' },
+                    { value: 'lg', label: 'Large' }
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Live Preview with Selected Variant */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu varianta selectată:</p>
+              
+              <Card variant={selectedCardVariant} padding={selectedCardPadding}>
+                <CardContent>
+                  <CardHeader icon="🎯">
+                    <CardTitle>Card Component</CardTitle>
+                    <CardBadge variant="primary">New</CardBadge>
+                  </CardHeader>
+                  <CardDescription>
+                    Acesta este un Card cu varianta <strong>{selectedCardVariant}</strong> și padding <strong>{selectedCardPadding}</strong>.
+                  </CardDescription>
+                  <CardFooter>
+                    <span>3 componente</span>
+                    <span>Actualizat acum</span>
+                  </CardFooter>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* All Variants Display */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Exemple de utilizare:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Component Showcase Style Card */}
+                <Card variant="interactive" onClick={() => alert('Card clicked!')}>
+                  <CardContent>
+                    <CardHeader icon="🔘">
+                      <div>
+                        <CardTitle>Button Component</CardTitle>
+                        <CardBadge variant="primary">UI</CardBadge>
+                      </div>
+                    </CardHeader>
+                    <CardDescription clamp>
+                      Buton interactiv cu multiple variante și dimensiuni. Include loading states și animații smooth.
+                    </CardDescription>
+                    <CardFooter>
+                      <span>Folosit în 5 pagini</span>
+                      <span>5 variante</span>
+                    </CardFooter>
+                  </CardContent>
+                </Card>
+
+                {/* Simple Card */}
+                <Card variant="default" padding="lg">
+                  <CardTitle>Simple Card</CardTitle>
+                  <CardDescription>
+                    Un card simplu cu titlu și descriere. Poate fi folosit pentru afișarea de conținut static.
+                  </CardDescription>
+                </Card>
+
+                {/* Outline Card with Badge */}
+                <Card variant="outline">
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-3">
+                      <CardTitle>Stats Card</CardTitle>
+                      <CardBadge variant="success">Active</CardBadge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Total Users</span>
+                        <span className="font-semibold">1,234</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Active Now</span>
+                        <span className="font-semibold text-green-600">89</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Card with no padding */}
+                <Card variant="default" padding="none" className="overflow-hidden">
+                  <img 
+                    src="https://via.placeholder.com/400x200/1a365d/ffffff?text=Card+Image" 
+                    alt="Card with image"
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="p-4">
+                    <CardTitle>Image Card</CardTitle>
+                    <CardDescription>Card cu imagine și padding customizat</CardDescription>
+                  </div>
+                </Card>
+
+                {/* Error state card */}
+                <Card variant="outline">
+                  <CardContent>
+                    <CardHeader icon="⚠️">
+                      <div>
+                        <CardTitle>Error Report</CardTitle>
+                        <CardBadge variant="error">Critical</CardBadge>
+                      </div>
+                    </CardHeader>
+                    <CardDescription>
+                      S-a detectat o eroare în sistem. Verifică logs pentru detalii.
+                    </CardDescription>
+                    <div className="mt-3">
+                      <Button variant="destructive" size="sm">View Details</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Complex card with all elements */}
+                <Card variant="interactive">
+                  <CardContent>
+                    <CardHeader icon="📊">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <CardTitle>Analytics Dashboard</CardTitle>
+                          <CardBadge variant="warning">Beta</CardBadge>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Last updated 5 min ago
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardDescription>
+                      Monitorizează performanța aplicației în timp real cu metrici detaliate și grafice interactive.
+                    </CardDescription>
+                    <div className="flex gap-2 mt-3">
+                      <Button variant="primary" size="sm">Open Dashboard</Button>
+                      <Button variant="outline" size="sm">Settings</Button>
+                    </div>
+                    <CardFooter className="mt-4 pt-4 border-t dark:border-gray-700">
+                      <span>12 widgets active</span>
+                      <span className="text-green-600 dark:text-green-400">Online</span>
+                    </CardFooter>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>

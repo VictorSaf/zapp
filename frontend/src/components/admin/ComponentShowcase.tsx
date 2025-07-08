@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { componentRegistry, getComponentsByCategory, ComponentInfo } from '../../utils/component-registry'
-import { AnimatedCard } from '../ui/AnimatedCard'
+import { Card, CardHeader, CardTitle, CardBadge, CardDescription, CardFooter, CardContent } from '../ui/Card'
 import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
@@ -45,7 +45,7 @@ export const ComponentShowcase: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Search and Filters */}
-      <AnimatedCard variant="default" className="p-4 mb-6">
+      <Card variant="default" padding="md">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <Input
@@ -70,51 +70,38 @@ export const ComponentShowcase: React.FC = () => {
             ))}
           </div>
         </div>
-      </AnimatedCard>
+      </Card>
 
       {/* Components Grid */}
       <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredComponents.map((component) => (
-          <AnimatedCard 
+          <Card 
             key={component.name}
-            variant="interactive" 
-            className="h-full cursor-pointer"
+            variant="interactive"
             onClick={() => setSelectedComponent(component)}
           >
-            <div className="p-4 space-y-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">{component.icon}</span>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      {component.name}
-                    </h3>
-                    <span className={cn(
-                      "inline-block px-2 py-0.5 text-xs rounded-full mt-1",
-                      categoryColors[component.category]
-                    )}>
-                      {categoryLabels[component.category]}
-                    </span>
-                  </div>
+            <CardContent>
+              <CardHeader icon={component.icon}>
+                <div>
+                  <CardTitle>{component.name}</CardTitle>
+                  <CardBadge className={cn(categoryColors[component.category])}>
+                    {categoryLabels[component.category]}
+                  </CardBadge>
                 </div>
-              </div>
+              </CardHeader>
               
-              <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              <CardDescription clamp>
                 {component.description}
-              </p>
+              </CardDescription>
               
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500 dark:text-gray-400">
-                  Folosit în {component.usedIn.length} pagini
-                </span>
+              <CardFooter>
+                <span>Folosit în {component.usedIn.length} pagini</span>
                 {component.variants && (
-                  <span className="text-gray-500 dark:text-gray-400">
-                    {component.variants.length} variante
-                  </span>
+                  <span>{component.variants.length} variante</span>
                 )}
-              </div>
-            </div>
-          </AnimatedCard>
+              </CardFooter>
+            </CardContent>
+          </Card>
         ))}
       </StaggerChildren>
 
@@ -128,7 +115,7 @@ export const ComponentShowcase: React.FC = () => {
         {selectedComponent && (
           <div className="space-y-6">
             {/* Header */}
-            <AnimatedCard variant="default" className="p-4">
+            <Card variant="default" padding="md">
               <div className="flex items-center space-x-4">
                 <span className="text-4xl">{selectedComponent.icon}</span>
                 <div>
@@ -140,7 +127,7 @@ export const ComponentShowcase: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </AnimatedCard>
+            </Card>
 
             {/* Component Preview */}
             <ComponentPreview componentName={selectedComponent.name} />
@@ -148,7 +135,7 @@ export const ComponentShowcase: React.FC = () => {
             {/* Component Details Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Used In Pages */}
-              <AnimatedCard variant="default" className="p-4">
+              <Card variant="default" padding="md">
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
                   Folosit în paginile:
                 </h3>
@@ -162,11 +149,11 @@ export const ComponentShowcase: React.FC = () => {
                     </span>
                   ))}
                 </div>
-              </AnimatedCard>
+              </Card>
 
               {/* Props */}
               {selectedComponent.props && (
-                <AnimatedCard variant="default" className="p-4">
+                <Card variant="default" padding="md">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
                     Props disponibile:
                   </h3>
@@ -180,12 +167,12 @@ export const ComponentShowcase: React.FC = () => {
                       </code>
                     ))}
                   </div>
-                </AnimatedCard>
+                </Card>
               )}
 
               {/* Variants */}
               {selectedComponent.variants && (
-                <AnimatedCard variant="default" className="p-4">
+                <Card variant="default" padding="md">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
                     Variante:
                   </h3>
@@ -199,12 +186,12 @@ export const ComponentShowcase: React.FC = () => {
                       </span>
                     ))}
                   </div>
-                </AnimatedCard>
+                </Card>
               )}
             </div>
 
             {/* Features */}
-            <AnimatedCard variant="default" className="p-4">
+            <Card variant="default" padding="md">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
                 Caracteristici:
               </h3>
@@ -221,7 +208,7 @@ export const ComponentShowcase: React.FC = () => {
                   </motion.li>
                 ))}
               </StaggerChildren>
-            </AnimatedCard>
+            </Card>
 
             {/* Category Badge */}
             <div className="flex items-center justify-between pt-4 border-t dark:border-gray-700">
