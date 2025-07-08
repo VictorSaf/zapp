@@ -14,6 +14,7 @@ import { AnimatedLoader } from '../components/ui/AnimatedLoader'
 import { Alert } from '../components/ui/Alert'
 import { StaggerChildren } from '../components/animations'
 import { Header } from '../components/layout'
+import { ComponentShowcase } from '../components/admin/ComponentShowcase'
 import { cn } from '../utils/cn'
 
 interface AgentConfig {
@@ -548,6 +549,31 @@ export const Settings: React.FC = () => {
               </div>
             </div>
           </AnimatedCard>
+        </TabPanel>
+      )
+    },
+    {
+      id: 'components',
+      label: 'Componente UI',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+        </svg>
+      ),
+      content: (
+        <TabPanel>
+          <div className="space-y-4">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Biblioteca de Componente
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Explorează toate componentele UI folosite în aplicație, vezi unde sunt folosite și ce caracteristici au.
+              </p>
+            </div>
+            
+            <ComponentShowcase />
+          </div>
         </TabPanel>
       )
     }
