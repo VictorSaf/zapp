@@ -1,5 +1,6 @@
 #!/bin/bash
-cd /Users/victorsafta/work/z_app/frontend
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/frontend"
 npm run dev > frontend-dev.log 2>&1 &
 echo "Frontend started in background with PID $!"
 sleep 5
