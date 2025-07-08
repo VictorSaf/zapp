@@ -34,6 +34,8 @@ export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
+      style={{ backgroundColor: 'transparent' }}
+      className="min-h-screen"
     >
       {children}
     </motion.div>
