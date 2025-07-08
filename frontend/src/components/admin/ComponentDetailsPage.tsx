@@ -220,13 +220,13 @@ export const ComponentDetailsPage: React.FC<ComponentDetailsPageProps> = ({
               </p>
               <div className="flex flex-wrap gap-2">
                 {/* This would be populated with actual related components */}
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600/30 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700/70 hover:border-gray-300 dark:hover:border-gray-500/50 transition-all">
                   Button
                 </span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600/30 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700/70 hover:border-gray-300 dark:hover:border-gray-500/50 transition-all">
                   Input
                 </span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600/30 rounded-full text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700/70 hover:border-gray-300 dark:hover:border-gray-500/50 transition-all">
                   Card
                 </span>
               </div>

@@ -42,19 +42,19 @@ export const TagList: React.FC<TagListProps> = ({
   // Professional color schemes with WCAG AA compliance (4.5:1 contrast ratio)
   const variantClasses = {
     default: {
-      base: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100',
-      hover: 'hover:bg-gray-200 dark:hover:bg-gray-600',
-      border: 'border border-gray-200 dark:border-gray-600'
+      base: 'bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-200',
+      hover: 'hover:bg-gray-200 dark:hover:bg-gray-700/70',
+      border: 'border border-gray-200 dark:border-gray-600/30'
     },
     primary: {
-      base: 'bg-primary/10 dark:bg-primary/20 text-primary-700 dark:text-primary-300',
+      base: 'bg-primary/10 dark:bg-primary/20 text-primary-700 dark:text-blue-300',
       hover: 'hover:bg-primary/20 dark:hover:bg-primary/30',
       border: 'border border-primary/20 dark:border-primary/30'
     },
     code: {
-      base: 'bg-gray-900 dark:bg-gray-800 text-gray-100 dark:text-gray-100 font-mono',
-      hover: 'hover:bg-gray-800 dark:hover:bg-gray-700',
-      border: 'border border-gray-700 dark:border-gray-600'
+      base: 'bg-gray-900 dark:bg-gray-700/50 text-gray-100 dark:text-gray-200 font-mono',
+      hover: 'hover:bg-gray-800 dark:hover:bg-gray-700/70',
+      border: 'border border-gray-700 dark:border-gray-600/30'
     },
     success: {
       base: 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300',

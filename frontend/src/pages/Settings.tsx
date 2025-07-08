@@ -243,9 +243,9 @@ export const Settings: React.FC = () => {
       content: (
         <TabPanel>
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Module Aplicație</h3>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Module Aplicație</h3>
             
-            <label className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <label className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -254,8 +254,8 @@ export const Settings: React.FC = () => {
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Chat AI</span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Conversații cu agenții AI</p>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Chat AI</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">Conversații cu agenții AI</p>
                 </div>
               </div>
               <motion.span 
@@ -264,15 +264,15 @@ export const Settings: React.FC = () => {
                 className={cn(
                   "px-2 py-1 text-xs rounded-full",
                   settings?.features?.chat_enabled 
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" 
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400"
                 )}
               >
                 {settings?.features?.chat_enabled ? 'Activ' : 'Inactiv'}
               </motion.span>
             </label>
             
-            <label className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <label className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -281,8 +281,8 @@ export const Settings: React.FC = () => {
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Analytics</span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Statistici și rapoarte detaliate</p>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Analytics</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">Statistici și rapoarte detaliate</p>
                 </div>
               </div>
               <motion.span 
@@ -291,15 +291,15 @@ export const Settings: React.FC = () => {
                 className={cn(
                   "px-2 py-1 text-xs rounded-full",
                   settings?.features?.analytics_enabled 
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" 
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400"
                 )}
               >
                 {settings?.features?.analytics_enabled ? 'Activ' : 'Inactiv'}
               </motion.span>
             </label>
             
-            <label className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <label className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -308,8 +308,8 @@ export const Settings: React.FC = () => {
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Export Date</span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Export conversații și date</p>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Export Date</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">Export conversații și date</p>
                 </div>
               </div>
               <motion.span 
@@ -318,15 +318,15 @@ export const Settings: React.FC = () => {
                 className={cn(
                   "px-2 py-1 text-xs rounded-full",
                   settings?.features?.export_enabled 
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" 
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400"
                 )}
               >
                 {settings?.features?.export_enabled ? 'Activ' : 'Inactiv'}
               </motion.span>
             </label>
             
-            <label className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <label className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -335,8 +335,8 @@ export const Settings: React.FC = () => {
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Comunitate</span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Forum și discuții între utilizatori</p>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Comunitate</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">Forum și discuții între utilizatori</p>
                 </div>
               </div>
               <motion.span 
@@ -345,8 +345,8 @@ export const Settings: React.FC = () => {
                 className={cn(
                   "px-2 py-1 text-xs rounded-full",
                   settings?.features?.community_enabled 
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" 
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400"
                 )}
               >
                 {settings?.features?.community_enabled ? 'Activ' : 'Inactiv'}
@@ -389,12 +389,12 @@ export const Settings: React.FC = () => {
               onChange={(e) => updateNestedSettings(['limits', 'max_file_size_mb'], parseInt(e.target.value))}
             />
             
-            <AnimatedCard variant="default" className="p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+            <AnimatedCard variant="default" className="p-4 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800/50">
               <div className="flex items-start space-x-3">
                 <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <div className="text-sm text-blue-800 dark:text-blue-200">
+                <div className="text-sm text-blue-800 dark:text-blue-300">
                   <p className="font-medium mb-1">Despre Limite</p>
                   <p>Aceste limite ajută la protejarea resurselor și prevenirea abuzurilor. Valorile 0 înseamnă nelimitat.</p>
                 </div>
@@ -436,8 +436,8 @@ export const Settings: React.FC = () => {
                     <div className="flex items-center space-x-3">
                       <span className="text-3xl">{agent.icon}</span>
                       <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">{agent.name}</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{agent.description}</p>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">{agent.name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{agent.description}</p>
                       </div>
                     </div>
                     <label className="flex items-center space-x-2 cursor-pointer">
@@ -449,7 +449,7 @@ export const Settings: React.FC = () => {
                         }}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                       />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Activ</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Activ</span>
                     </label>
                   </div>
 
@@ -518,8 +518,8 @@ export const Settings: React.FC = () => {
                   </div>
 
                   {!agent.enabled && (
-                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800/50 rounded-lg">
+                      <p className="text-sm text-yellow-800 dark:text-yellow-300">
                         ⚠️ Agentul este dezactivat. Utilizatorii nu vor putea interacționa cu acest agent.
                       </p>
                     </div>
@@ -527,8 +527,8 @@ export const Settings: React.FC = () => {
 
                   {agent.enabled && (agent.friendly_model.includes('gpt') || agent.expert_model.includes('gpt') || 
                                      agent.friendly_model.includes('claude') || agent.expert_model.includes('claude')) && (
-                    <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                      <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 rounded-lg">
+                      <p className="text-sm text-blue-800 dark:text-blue-300">
                         💡 Acest agent folosește modele cloud care necesită API keys și pot genera costuri.
                       </p>
                     </div>
@@ -538,7 +538,7 @@ export const Settings: React.FC = () => {
             ))}
           </StaggerChildren>
 
-          <AnimatedCard variant="default" className="p-4 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <AnimatedCard variant="default" className="p-4 bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700">
             <div className="flex items-start space-x-3">
               <svg className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -564,10 +564,10 @@ export const Settings: React.FC = () => {
         <TabPanel>
           <div className="space-y-4">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 Biblioteca de Componente
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Explorează toate componentele UI folosite în aplicație, vezi unde sunt folosite și ce caracteristici au.
               </p>
             </div>
@@ -586,7 +586,7 @@ export const Settings: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Header 
           title="Setări"
           backTo="/dashboard"
@@ -607,7 +607,7 @@ export const Settings: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg text-sm font-medium inline-flex items-center"
+                  className="px-4 py-2 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 rounded-lg text-sm font-medium inline-flex items-center"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -672,7 +672,7 @@ export const Settings: React.FC = () => {
           onClose={() => setShowConfirmModal(false)}
           title="Confirmă Salvarea"
         >
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-gray-200">
             Ești sigur că vrei să salvezi modificările? Acestea vor afecta toți utilizatorii aplicației.
           </p>
           
