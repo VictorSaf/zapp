@@ -82,42 +82,45 @@ interface FeatureListProps {
 }
 
 export const FeatureList: React.FC<FeatureListProps> = ({ features, className, animate = false }) => {
-  const listContent = features.map((feature, index) => (
-    <li
-      key={index}
-      className="flex items-start space-x-2 list-none"
-    >
-      <span className="text-primary mt-0.5">•</span>
-      <span className="text-sm text-gray-600 dark:text-gray-300">
-        {feature}
-      </span>
-    </li>
-  ))
-
   if (animate) {
-    const { StaggerChildren } = require('../animations')
-    const { motion } = require('framer-motion')
-    
-    return (
-      <StaggerChildren className={cn("space-y-2", className)}>
-        {features.map((feature, index) => (
-          <motion.li
-            key={index}
-            className="flex items-start space-x-2 list-none"
-          >
-            <span className="text-primary mt-0.5">•</span>
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              {feature}
-            </span>
-          </motion.li>
-        ))}
-      </StaggerChildren>
-    )
+    // Import StaggerChildren dynamically for animated version
+    try {
+      const { StaggerChildren } = require('../animations/StaggerChildren')
+      
+      return (
+        <StaggerChildren className={cn("space-y-2", className)}>
+          {features.map((feature, index) => (
+            <motion.li
+              key={index}
+              className="flex items-start space-x-2 list-none"
+            >
+              <span className="text-primary mt-0.5">•</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                {feature}
+              </span>
+            </motion.li>
+          ))}
+        </StaggerChildren>
+      )
+    } catch (error) {
+      // Fallback to non-animated version if StaggerChildren is not available
+      console.warn('StaggerChildren not available, using non-animated version')
+    }
   }
 
   return (
     <ul className={cn("space-y-2", className)}>
-      {listContent}
+      {features.map((feature, index) => (
+        <li
+          key={index}
+          className="flex items-start space-x-2 list-none"
+        >
+          <span className="text-primary mt-0.5">•</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {feature}
+          </span>
+        </li>
+      ))}
     </ul>
   )
 }

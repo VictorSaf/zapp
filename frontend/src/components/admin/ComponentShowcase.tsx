@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { componentRegistry, getComponentsByCategory, ComponentInfo } from '../../utils/component-registry'
 import { Card, CardHeader, CardTitle, CardBadge, CardDescription, CardFooter, CardContent } from '../ui/Card'
-import { DetailCard, TagList, FeatureList, SectionCard } from '../ui/DetailCard'
-import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { StaggerChildren } from '../animations'
-import { ComponentPreview } from './ComponentPreview'
+import { ComponentDetailsPage } from './ComponentDetailsPage'
 import { cn } from '../../utils/cn'
 
 const categoryColors = {
@@ -43,8 +41,35 @@ export const ComponentShowcase: React.FC = () => {
 
   const categories: Array<ComponentInfo['category'] | 'all'> = ['all', 'ui', 'layout', 'animation', 'form', 'data', 'feedback']
 
+  // If a component is selected, show the details page
+  if (selectedComponent) {
+    return (
+      <ComponentDetailsPage 
+        component={selectedComponent}
+        onClose={() => setSelectedComponent(null)}
+      />
+    )
+  }
+
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Componente UI
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Explorează și testează toate componentele disponibile
+          </p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {filteredComponents.length} componente
+          </span>
+        </div>
+      </div>
+
       {/* Search and Filters */}
       <Card variant="default" padding="md">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -105,80 +130,6 @@ export const ComponentShowcase: React.FC = () => {
           </Card>
         ))}
       </StaggerChildren>
-
-      {/* Component Details Modal */}
-      <AnimatedModal
-        isOpen={!!selectedComponent}
-        onClose={() => setSelectedComponent(null)}
-        title={selectedComponent?.name || ''}
-        size="xl"
-      >
-        {selectedComponent && (
-          <div className="space-y-6">
-            {/* Header */}
-            <SectionCard 
-              title={selectedComponent.name}
-              icon={selectedComponent.icon}
-            >
-              <p className="text-gray-600 dark:text-gray-300 -mt-2">
-                {selectedComponent.description}
-              </p>
-            </SectionCard>
-
-            {/* Component Preview */}
-            <ComponentPreview componentName={selectedComponent.name} />
-
-            {/* Component Details Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Used In Pages */}
-              <DetailCard title="Folosit în paginile:">
-                <TagList items={selectedComponent.usedIn} />
-              </DetailCard>
-
-              {/* Props */}
-              {selectedComponent.props && (
-                <DetailCard title="Props disponibile:">
-                  <TagList items={selectedComponent.props} variant="code" />
-                </DetailCard>
-              )}
-
-              {/* Variants */}
-              {selectedComponent.variants && (
-                <DetailCard title="Variante:">
-                  <TagList items={selectedComponent.variants} variant="primary" />
-                </DetailCard>
-              )}
-            </div>
-
-            {/* Features */}
-            <DetailCard title="Caracteristici:">
-              <FeatureList features={selectedComponent.features} animate />
-            </DetailCard>
-
-            {/* Category Badge */}
-            <div className="flex items-center justify-between pt-4 border-t dark:border-gray-700">
-              <span className={cn(
-                "px-3 py-1 rounded-full text-sm font-medium",
-                categoryColors[selectedComponent.category]
-              )}>
-                {categoryLabels[selectedComponent.category]}
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Total utilizări: {selectedComponent.usedIn.length}
-              </span>
-            </div>
-          </div>
-        )}
-        
-        <ModalFooter>
-          <Button
-            variant="outline"
-            onClick={() => setSelectedComponent(null)}
-          >
-            Închide
-          </Button>
-        </ModalFooter>
-      </AnimatedModal>
     </div>
   )
 }
