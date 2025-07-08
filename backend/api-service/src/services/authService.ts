@@ -271,4 +271,27 @@ export class AuthService {
 
     return result.rowCount || 0;
   }
+
+  // Update user profile
+  async updateUserProfile(userId: string, data: {
+    first_name: string;
+    last_name: string;
+    phone?: string;
+  }): Promise<any> {
+    console.log('Updating user profile:', { userId, data });
+    
+    const result = await this.pool.query(`
+      UPDATE zaeus_core.users 
+      SET first_name = $1, last_name = $2, phone = $3, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $4
+      RETURNING id, email, first_name, last_name, phone, email_verified, 
+                two_factor_enabled, is_admin, created_at, updated_at
+    `, [data.first_name, data.last_name, data.phone || null, userId]);
+
+    if (result.rows.length === 0) {
+      throw new Error('User not found');
+    }
+
+    return result.rows[0];
+  }
 }

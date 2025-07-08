@@ -6,6 +6,9 @@ export interface User {
   email_verified: boolean
   two_factor_enabled: boolean
   is_admin?: boolean
+  phone?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface LoginRequest {

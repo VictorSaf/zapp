@@ -13,6 +13,7 @@ interface AuthActions {
   register: (data: RegisterRequest) => Promise<void>
   logout: () => Promise<void>
   loadUser: () => Promise<void>
+  updateProfile: (data: Partial<User>) => Promise<void>
   clearError: () => void
 }
 
@@ -104,6 +105,26 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error) {
           authService.clearTokens()
           set(initialState)
+        }
+      },
+
+      updateProfile: async (data) => {
+        set({ isLoading: true, error: null })
+        
+        try {
+          const updatedUser = await authService.updateProfile(data)
+          
+          set((state) => ({
+            user: { ...state.user, ...updatedUser } as User,
+            isLoading: false,
+            error: null,
+          }))
+        } catch (error) {
+          set({
+            isLoading: false,
+            error: error instanceof Error ? error.message : 'Failed to update profile'
+          })
+          throw error
         }
       },
 

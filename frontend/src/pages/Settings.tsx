@@ -554,7 +554,7 @@ export const Settings: React.FC = () => {
     },
     {
       id: 'components',
-      label: 'Componente UI',
+      label: 'Interfață',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
@@ -588,45 +588,52 @@ export const Settings: React.FC = () => {
     <PageTransition>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header 
-          title="Setări Admin"
+          title="Setări"
           backTo="/dashboard"
           backLabel="Dashboard"
           showThemeSwitcher={true}
           showAdminButton={false}
           showUserInfo={true}
           showLogout={true}
-        >
-          {savedAlert && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg text-sm font-medium"
-            >
-              ✓ Salvat cu succes
-            </motion.div>
-          )}
-          
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setShowConfirmModal(true)}
-            disabled={isSaving || isLoading || !settings}
-            className="min-w-[120px]"
-          >
-            {isSaving ? (
-              <span className="flex items-center space-x-2">
-                <AnimatedLoader size="sm" />
-                <span>Salvează...</span>
-              </span>
-            ) : (
-              'Salvează Modificările'
-            )}
-          </Button>
-        </Header>
+        />
         
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Save Button and Alert */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              {savedAlert && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg text-sm font-medium inline-flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Salvat cu succes
+                </motion.div>
+              )}
+            </div>
+            
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setShowConfirmModal(true)}
+              disabled={isSaving || isLoading || !settings}
+              className="min-w-[160px]"
+            >
+              {isSaving ? (
+                <span className="flex items-center space-x-2">
+                  <AnimatedLoader size="sm" />
+                  <span>Salvează...</span>
+                </span>
+              ) : (
+                'Salvează Modificările'
+              )}
+            </Button>
+          </div>
           {error && (
             <Alert
               type="error"

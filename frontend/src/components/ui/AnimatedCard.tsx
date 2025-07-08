@@ -32,7 +32,7 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
     className
   )
 
-  const animationVariant = animations[animationType]
+  const animationVariant = animations[animationType] || animations.fadeInScale
 
   return (
     <motion.div

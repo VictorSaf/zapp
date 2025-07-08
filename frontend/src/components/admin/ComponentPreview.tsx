@@ -15,6 +15,9 @@ import { Alert } from '../ui/Alert'
 import { AnimatedTooltip } from '../ui/AnimatedTooltip'
 import { ThemeSwitcher } from '../ui/ThemeSwitcher'
 import { ScrollProgress } from '../ui/ScrollProgress'
+import { PasswordInput } from '../ui/PasswordInput'
+import { FeatureToggle } from '../ui/FeatureToggle'
+import { StatCard } from '../ui/StatCard'
 import { ConnectionStatus } from '../chat/ConnectionStatus'
 import { TypingIndicator } from '../chat/TypingIndicator'
 import { ChatInput } from '../chat/ChatInput'
@@ -933,22 +936,116 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
           <div className="space-y-6">
             {/* All Variants Display */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Toate variantele TagList:</p>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Toate variantele cu contrast optimizat:</h4>
               
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-medium mb-2">Default variant:</p>
-                  <TagList items={['Dashboard', 'Settings', 'Profile', 'Analytics']} />
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Default variant (WCAG AA compliant):</p>
+                  <TagList items={['Dashboard', 'Settings', 'Profile', 'Analytics', 'Reports']} />
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">Primary variant:</p>
-                  <TagList items={['primary', 'secondary', 'outline', 'ghost']} variant="primary" />
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Primary variant:</p>
+                  <TagList items={['primary', 'secondary', 'outline', 'ghost', 'destructive']} variant="primary" />
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">Code variant:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Code variant (mono font):</p>
                   <TagList items={['onClick', 'variant', 'size', 'disabled', 'loading']} variant="code" />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Variante colorate:</p>
+                  <div className="space-y-2">
+                    <TagList items={['Success', 'Completed', 'Active']} variant="success" />
+                    <TagList items={['Warning', 'Pending', 'Review']} variant="warning" />
+                    <TagList items={['Error', 'Failed', 'Critical']} variant="error" />
+                    <TagList items={['Info', 'Notice', 'Update']} variant="info" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Interactive Examples */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Tag-uri interactive:</h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Click pe tag-uri pentru acțiuni:</p>
+                  <TagList 
+                    items={['Add Filter', 'Remove Filter', 'Clear All']} 
+                    variant="primary"
+                    interactive
+                    onTagClick={(tag) => alert(`Clicked: ${tag}`)}
+                  />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tag-uri de navigație:</p>
+                  <TagList 
+                    items={['Home', 'Products', 'About', 'Contact']} 
+                    variant="default"
+                    interactive
+                    onTagClick={(tag) => console.log(`Navigate to: ${tag}`)}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Size Variations */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Dimensiuni disponibile:</h4>
+              
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Small (sm):</p>
+                  <TagList items={['React', 'TypeScript', 'Tailwind']} size="sm" />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Medium (md) - default:</p>
+                  <TagList items={['React', 'TypeScript', 'Tailwind']} size="md" />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Large (lg):</p>
+                  <TagList items={['React', 'TypeScript', 'Tailwind']} size="lg" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Real-world Examples */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Exemple din aplicație:</h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tehnologii folosite:</p>
+                  <TagList 
+                    items={['React 18', 'TypeScript 5', 'Tailwind CSS', 'Framer Motion', 'Zustand']} 
+                    variant="code"
+                    size="sm"
+                  />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status proiect:</p>
+                  <div className="flex gap-4">
+                    <TagList items={['In Development']} variant="warning" />
+                    <TagList items={['2 Bugs']} variant="error" />
+                    <TagList items={['85% Complete']} variant="success" />
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Categorii componente:</p>
+                  <TagList 
+                    items={['UI Components', 'Layout', 'Forms', 'Data Display', 'Feedback']} 
+                    variant="default"
+                    interactive
+                    size="sm"
+                  />
                 </div>
               </div>
             </div>
@@ -1240,6 +1337,165 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
                   </ul>
                 </div>
               </div>
+            </div>
+          </div>
+        )
+
+      case 'PasswordInput':
+        return (
+          <div className="space-y-6 max-w-md">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Password input cu toggle vizibilitate:</h4>
+              <PasswordInput
+                label="Parolă"
+                placeholder="Introdu parola"
+                helperText="Minim 8 caractere"
+              />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Cu indicator putere parolă:</h4>
+              <PasswordInput
+                label="Parolă nouă"
+                placeholder="Alege o parolă puternică"
+                strength={true}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fără toggle (doar indicator):</h4>
+              <PasswordInput
+                label="Confirmă parola"
+                placeholder="Reintrodu parola"
+                showToggle={false}
+                strength={true}
+              />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Cu eroare:</h4>
+              <PasswordInput
+                label="Parolă"
+                placeholder="••••••••"
+                error="Parola nu îndeplinește cerințele de securitate"
+              />
+            </div>
+          </div>
+        )
+        
+      case 'FeatureToggle':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Feature toggles simple:</h4>
+              <div className="space-y-3">
+                <FeatureToggle
+                  label="Notificări Push"
+                  description="Primește notificări instant despre piață"
+                  enabled={checkboxChecked}
+                  onChange={setCheckboxChecked}
+                  icon={<span className="text-xl">🔔</span>}
+                />
+                
+                <FeatureToggle
+                  label="Dark Mode"
+                  description="Activează tema întunecată"
+                  enabled={true}
+                  onChange={() => {}}
+                  icon={<span className="text-xl">🌙</span>}
+                />
+                
+                <FeatureToggle
+                  label="Auto-save"
+                  description="Salvează automat modificările"
+                  enabled={false}
+                  onChange={() => {}}
+                  icon={<span className="text-xl">💾</span>}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fără icon sau descriere:</h4>
+              <FeatureToggle
+                label="Mod Expert"
+                enabled={false}
+                onChange={() => {}}
+              />
+            </div>
+          </div>
+        )
+        
+      case 'StatCard':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Stat cards cu trend indicators:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <StatCard
+                  title="Total Utilizatori"
+                  value="1,234"
+                  change={{ value: 12.5, type: 'increase' }}
+                  icon={<span className="text-2xl">👥</span>}
+                  description="vs. luna trecută"
+                />
+                
+                <StatCard
+                  title="Conversii"
+                  value="89.3%"
+                  change={{ value: -2.4, type: 'decrease' }}
+                  icon={<span className="text-2xl">📈</span>}
+                  variant="warning"
+                />
+                
+                <StatCard
+                  title="Revenue"
+                  value="$45,678"
+                  change={{ value: 0, type: 'neutral' }}
+                  icon={<span className="text-2xl">💰</span>}
+                  variant="success"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Variante colorate:</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <StatCard
+                  title="Default"
+                  value="123"
+                  variant="default"
+                />
+                
+                <StatCard
+                  title="Primary"
+                  value="456"
+                  variant="primary"
+                />
+                
+                <StatCard
+                  title="Success"
+                  value="789"
+                  variant="success"
+                />
+                
+                <StatCard
+                  title="Error"
+                  value="404"
+                  variant="error"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fără icon sau change indicator:</h4>
+              <StatCard
+                title="Simple Stat"
+                value="42"
+                description="Just a number"
+              />
             </div>
           </div>
         )

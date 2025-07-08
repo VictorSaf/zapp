@@ -234,4 +234,40 @@ router.post('/verify-token', authGeneralRateLimiter, async (req: Request, res: R
   }
 });
 
+// PUT /api/auth/profile - Update user profile
+router.put('/profile', authGeneralRateLimiter, requireAuth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    console.log('Update profile request:', req.body);
+    console.log('User from token:', req.user);
+    
+    if (!req.user) {
+      throw createError('Authentication required', 401);
+    }
+
+    const { first_name, last_name, phone } = req.body;
+
+    // Validate input
+    if (!first_name || !last_name) {
+      throw createError('First name and last name are required', 400);
+    }
+
+    // Update user profile
+    const updatedUser = await authService.updateUserProfile(req.user.id, {
+      first_name,
+      last_name,
+      phone
+    });
+
+    res.json({
+      success: true,
+      data: {
+        user: updatedUser
+      },
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

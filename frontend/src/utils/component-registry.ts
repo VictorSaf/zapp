@@ -121,16 +121,19 @@ export const componentRegistry: ComponentInfo[] = [
   {
     name: 'TagList',
     category: 'data',
-    description: 'Listă de tag-uri pentru afișarea elementelor precum pagini, props, variante',
-    props: ['items', 'variant', 'className'],
-    usedIn: ['ComponentShowcase', 'Settings'],
+    description: 'Component profesional pentru afișarea de tag-uri cu contrast optimizat și interactivitate',
+    props: ['items', 'variant', 'size', 'interactive', 'onTagClick', 'className'],
+    usedIn: ['ComponentShowcase', 'Settings', 'ComponentDetailsPage'],
     features: [
-      'Variante: default, primary, code',
-      'Layout flexibil cu wrap',
-      'Stilizare consistentă pentru tag-uri',
-      'Perfect pentru liste de metadate'
+      'Variante: default, primary, code, success, warning, error, info',
+      'Trei dimensiuni: sm, md, lg',
+      'Mod interactiv cu click handlers',
+      'Contrast WCAG AA pentru toate variantele',
+      'Border subtil pentru claritate vizuală',
+      'Focus states pentru accesibilitate',
+      'Animații smooth la hover și click'
     ],
-    variants: ['default', 'primary', 'code'],
+    variants: ['default', 'primary', 'code', 'success', 'warning', 'error', 'info'],
     icon: '🏷️'
   },
   {
@@ -285,14 +288,16 @@ export const componentRegistry: ComponentInfo[] = [
   {
     name: 'ThemeSwitcher',
     category: 'ui',
-    description: 'Selector pentru tema aplicației',
+    description: 'Selector pentru tema aplicației cu iconuri SVG',
     props: ['variant', 'showLabel'],
     usedIn: ['Header', 'Dashboard'],
     features: [
       'Variante: dropdown, toggle, buttons',
+      'Iconuri SVG în loc de emoji',
       'Persistare în localStorage',
       'Auto-detect system theme',
-      'Smooth transitions'
+      'Smooth transitions',
+      'Dropdown poziționat în header'
     ],
     variants: ['dropdown', 'toggle', 'buttons'],
     icon: '🎨'
@@ -314,15 +319,17 @@ export const componentRegistry: ComponentInfo[] = [
   {
     name: 'Header',
     category: 'layout',
-    description: 'Header sticky standardizat cu scroll detection',
+    description: 'Header sticky standardizat cu layout profesional',
     props: ['title', 'backTo', 'showThemeSwitcher', 'showAdminButton', 'showUserInfo'],
     usedIn: ['Dashboard', 'Settings', 'Chat'],
     features: [
-      'Sticky positioning',
-      'Scroll detection pentru efecte',
+      'Sticky positioning cu scroll effects',
+      'ZAEUS + titlu pagină cu font faded',
+      'User info cu icon SVG și prenume',
+      'Butoane aliniate la extrema dreaptă',
       'Backdrop blur la scroll',
-      'Slot pentru conținut custom',
-      'Responsive design'
+      'Click pe user pentru editare profil',
+      'Responsive design optimizat'
     ],
     icon: '🎯'
   },
@@ -425,6 +432,55 @@ export const componentRegistry: ComponentInfo[] = [
       'Smooth animations'
     ],
     icon: '🎭'
+  },
+  {
+    name: 'PasswordInput',
+    category: 'form',
+    description: 'Input specializat pentru parole cu toggle vizibilitate și indicator de putere',
+    props: ['showToggle', 'strength', 'value', 'onChange', 'label', 'error'],
+    usedIn: ['Register', 'Login', 'Settings'],
+    features: [
+      'Toggle vizibilitate parolă',
+      'Indicator putere parolă (opțional)',
+      'Integrare cu Input component',
+      'Validare integrată',
+      'Dark mode support',
+      'Accesibilitate completă'
+    ],
+    icon: '🔐'
+  },
+  {
+    name: 'FeatureToggle',
+    category: 'form',
+    description: 'Toggle switch animat pentru activare/dezactivare funcționalități',
+    props: ['label', 'description', 'enabled', 'onChange', 'icon'],
+    usedIn: ['Settings', 'Dashboard'],
+    features: [
+      'Animație smooth pentru switch',
+      'Icon și descriere opționale',
+      'Click pe întregul card',
+      'Dark mode optimizat',
+      'Motion animations',
+      'Accesibilitate WCAG AA'
+    ],
+    icon: '🔄'
+  },
+  {
+    name: 'StatCard',
+    category: 'data',
+    description: 'Card pentru afișare statistici cu animații și trend indicators',
+    props: ['title', 'value', 'change', 'icon', 'description', 'variant'],
+    usedIn: ['Dashboard', 'Analytics'],
+    features: [
+      'Trend indicators (creștere/scădere)',
+      'Variante colorate pentru contexte diferite',
+      'Animații pentru valori și schimbări',
+      'Icon opțional cu animație',
+      'Dark mode support',
+      'Responsive design'
+    ],
+    variants: ['default', 'primary', 'success', 'warning', 'error'],
+    icon: '📊'
   }
 ]
 

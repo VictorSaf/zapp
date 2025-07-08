@@ -90,7 +90,7 @@ export const Chat: React.FC = () => {
     <PageTransition>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header 
-          title="ZAEUS Chat"
+          title="Chat"
           backTo="/dashboard"
           backLabel="Dashboard"
           showThemeSwitcher={true}

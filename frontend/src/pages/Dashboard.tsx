@@ -112,7 +112,7 @@ export const Dashboard: React.FC = () => {
     <PageTransition>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <Header 
-          title={`${config.APP_NAME} - Dashboard`}
+          title="Dashboard"
           showThemeSwitcher={true}
           showAdminButton={true}
           showUserInfo={true}

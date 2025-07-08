@@ -66,6 +66,11 @@ class AuthService {
     return coreApi.post('/api/auth/reset-password', { token, password })
   }
 
+  async updateProfile(data: Partial<User>): Promise<User> {
+    const response = await coreApi.put<{ data: { user: User } }>('/api/auth/profile', data)
+    return response.data.user
+  }
+
   // Initialize service
   initialize() {
     const token = this.getToken()

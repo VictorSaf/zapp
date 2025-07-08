@@ -49,10 +49,28 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
     setIsOpen(false)
   }
 
+  const themeIcons = {
+    light: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    ),
+    dark: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+    ),
+    auto: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    )
+  }
+
   const themeOptions = [
-    { value: 'light', label: 'Luminos', icon: '☀️' },
-    { value: 'dark', label: 'Întunecat', icon: '🌙' },
-    { value: 'auto', label: 'Automat', icon: '🖥️' }
+    { value: 'light', label: 'Luminos', icon: themeIcons.light },
+    { value: 'dark', label: 'Întunecat', icon: themeIcons.dark },
+    { value: 'auto', label: 'Automat', icon: themeIcons.auto }
   ]
 
   const currentTheme = themeOptions.find(opt => opt.value === theme)
@@ -73,7 +91,7 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           className="w-5 h-5 bg-white rounded-full shadow-md flex items-center justify-center text-xs"
         >
-          {theme === 'dark' ? '🌙' : '☀️'}
+          {theme === 'dark' ? themeIcons.dark : themeIcons.light}
         </motion.div>
       </motion.button>
     )
@@ -127,7 +145,7 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
           'focus:outline-none focus:ring-2 focus:ring-primary/20'
         )}
       >
-        <span className="text-lg">{currentTheme?.icon}</span>
+        <span>{currentTheme?.icon}</span>
         {showLabel && <span className="text-sm font-medium">{currentTheme?.label}</span>}
         <motion.svg
           animate={{ rotate: isOpen ? 180 : 0 }}
@@ -167,7 +185,7 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
                   theme === option.value && 'bg-gray-100 dark:bg-gray-700'
                 )}
               >
-                <span className="text-lg">{option.icon}</span>
+                <span>{option.icon}</span>
                 <span className="text-sm font-medium">{option.label}</span>
                 {theme === option.value && (
                   <motion.svg
