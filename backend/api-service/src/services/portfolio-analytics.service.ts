@@ -258,6 +258,16 @@ export class PortfolioAnalyticsService extends EventEmitter {
       const volatility = this.calculateVolatility(dailyReturns);
       const { beta, alpha, rSquared } = await this.calculateMarketMetrics(accountId, dailyReturns);
 
+      // Calculate Information Ratio against SPX benchmark
+      const benchmarkReturns = await this.getBenchmarkReturns('SPX', dailyReturns.length);
+      let informationRatio = 0;
+      if (benchmarkReturns.length === dailyReturns.length && dailyReturns.length > 0) {
+        const trackingError = this.calculateTrackingError(dailyReturns, benchmarkReturns);
+        const excessReturns = dailyReturns.map((r, i) => r - benchmarkReturns[i]);
+        const avgExcessReturn = excessReturns.reduce((sum, r) => sum + r, 0) / excessReturns.length;
+        informationRatio = trackingError > 0 ? avgExcessReturn / trackingError : 0;
+      }
+
       // Get best/worst days
       const sortedReturns = [...dailyReturns].sort((a, b) => b - a);
       const bestDay = sortedReturns[0] || 0;
@@ -302,7 +312,7 @@ export class PortfolioAnalyticsService extends EventEmitter {
         beta,
         alpha,
         rSquared,
-        informationRatio: 0, // TODO: Calculate
+        informationRatio,
         treynorRatio: beta !== 0 ? (totalPnLPercent - 2) / beta : 0 // Risk-free rate assumed 2%
       };
 
@@ -356,6 +366,20 @@ export class PortfolioAnalyticsService extends EventEmitter {
           startDate = accountResult.rows[0]?.created_at || subYears(endDate, 1);
       }
 
+      // Fetch trade volume grouped by day within the period
+      const volumeResult = await client.query(
+        `SELECT DATE(open_time) as d, SUM(quantity) as volume
+         FROM trades
+         WHERE account_id = $1 AND open_time >= $2 AND open_time <= $3
+         GROUP BY d`,
+        [accountId, startDate, endDate]
+      );
+      const volumeMap = new Map<string, number>();
+      volumeResult.rows.forEach(v => {
+        const key = format(new Date(v.d), 'yyyy-MM-dd');
+        volumeMap.set(key, parseFloat(v.volume));
+      });
+
       // Get daily performance data
       const result = await client.query(
         `SELECT 
@@ -380,6 +404,9 @@ export class PortfolioAnalyticsService extends EventEmitter {
         const drawdown = peak - value;
         const drawdownPercent = peak > 0 ? (drawdown / peak) * 100 : 0;
 
+        const volKey = format(new Date(row.date), 'yyyy-MM-dd');
+        const volume = volumeMap.get(volKey) || 0;
+
         return {
           date: row.date,
           value,
@@ -388,7 +415,7 @@ export class PortfolioAnalyticsService extends EventEmitter {
           drawdown,
           drawdownPercent,
           trades: parseInt(row.trades),
-          volume: 0 // TODO: Calculate volume
+          volume
         };
       });
 
