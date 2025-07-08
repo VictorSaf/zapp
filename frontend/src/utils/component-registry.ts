@@ -105,6 +105,77 @@ export const componentRegistry: ComponentInfo[] = [
     icon: '🃏'
   },
   {
+    name: 'DetailCard',
+    category: 'ui',
+    description: 'Card standardizat pentru afișarea detaliilor și informațiilor structurate',
+    props: ['title', 'children', 'className'],
+    usedIn: ['ComponentShowcase', 'Settings', 'Dashboard'],
+    features: [
+      'Design consistent pentru secțiuni de detalii',
+      'Titlu standardizat',
+      'Suport pentru orice tip de conținut',
+      'Folosit împreună cu TagList, InfoGrid, FeatureList'
+    ],
+    icon: '📋'
+  },
+  {
+    name: 'TagList',
+    category: 'data',
+    description: 'Listă de tag-uri pentru afișarea elementelor precum pagini, props, variante',
+    props: ['items', 'variant', 'className'],
+    usedIn: ['ComponentShowcase', 'Settings'],
+    features: [
+      'Variante: default, primary, code',
+      'Layout flexibil cu wrap',
+      'Stilizare consistentă pentru tag-uri',
+      'Perfect pentru liste de metadate'
+    ],
+    variants: ['default', 'primary', 'code'],
+    icon: '🏷️'
+  },
+  {
+    name: 'FeatureList',
+    category: 'data',
+    description: 'Listă de caracteristici cu bullet points și animații opționale',
+    props: ['features', 'animate', 'className'],
+    usedIn: ['ComponentShowcase', 'Dashboard'],
+    features: [
+      'Bullet points colorate',
+      'Animații opționale cu StaggerChildren',
+      'Layout consistent pentru liste',
+      'Suport pentru text lung'
+    ],
+    icon: '📝'
+  },
+  {
+    name: 'InfoGrid',
+    category: 'data',
+    description: 'Grid pentru afișarea perechilor cheie-valoare în format tabelar',
+    props: ['items', 'className'],
+    usedIn: ['Dashboard', 'Settings'],
+    features: [
+      'Layout în două coloane',
+      'Aliniere automată',
+      'Stilizare customizabilă pentru valori',
+      'Perfect pentru statistici și metrici'
+    ],
+    icon: '📊'
+  },
+  {
+    name: 'SectionCard',
+    category: 'layout',
+    description: 'Card pentru secțiuni mari cu titlu, icon opțional și acțiuni',
+    props: ['title', 'icon', 'children', 'actions', 'className'],
+    usedIn: ['ComponentShowcase', 'Dashboard', 'Settings'],
+    features: [
+      'Header cu icon opțional',
+      'Slot pentru acțiuni în header',
+      'Titlu mai mare pentru secțiuni importante',
+      'Layout flexibil pentru conținut complex'
+    ],
+    icon: '📑'
+  },
+  {
     name: 'AnimatedModal',
     category: 'feedback',
     description: 'Modal dialog cu backdrop și animații',

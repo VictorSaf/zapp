@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { componentRegistry, getComponentsByCategory, ComponentInfo } from '../../utils/component-registry'
 import { Card, CardHeader, CardTitle, CardBadge, CardDescription, CardFooter, CardContent } from '../ui/Card'
+import { DetailCard, TagList, FeatureList, SectionCard } from '../ui/DetailCard'
 import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
@@ -115,19 +116,14 @@ export const ComponentShowcase: React.FC = () => {
         {selectedComponent && (
           <div className="space-y-6">
             {/* Header */}
-            <Card variant="default" padding="md">
-              <div className="flex items-center space-x-4">
-                <span className="text-4xl">{selectedComponent.icon}</span>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {selectedComponent.name}
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {selectedComponent.description}
-                  </p>
-                </div>
-              </div>
-            </Card>
+            <SectionCard 
+              title={selectedComponent.name}
+              icon={selectedComponent.icon}
+            >
+              <p className="text-gray-600 dark:text-gray-300 -mt-2">
+                {selectedComponent.description}
+              </p>
+            </SectionCard>
 
             {/* Component Preview */}
             <ComponentPreview componentName={selectedComponent.name} />
@@ -135,80 +131,29 @@ export const ComponentShowcase: React.FC = () => {
             {/* Component Details Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Used In Pages */}
-              <Card variant="default" padding="md">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                  Folosit în paginile:
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedComponent.usedIn.map(page => (
-                    <span
-                      key={page}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm"
-                    >
-                      {page}
-                    </span>
-                  ))}
-                </div>
-              </Card>
+              <DetailCard title="Folosit în paginile:">
+                <TagList items={selectedComponent.usedIn} />
+              </DetailCard>
 
               {/* Props */}
               {selectedComponent.props && (
-                <Card variant="default" padding="md">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                    Props disponibile:
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedComponent.props.map(prop => (
-                      <code
-                        key={prop}
-                        className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono"
-                      >
-                        {prop}
-                      </code>
-                    ))}
-                  </div>
-                </Card>
+                <DetailCard title="Props disponibile:">
+                  <TagList items={selectedComponent.props} variant="code" />
+                </DetailCard>
               )}
 
               {/* Variants */}
               {selectedComponent.variants && (
-                <Card variant="default" padding="md">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                    Variante:
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedComponent.variants.map(variant => (
-                      <span
-                        key={variant}
-                        className="px-3 py-1 bg-primary/10 text-primary dark:bg-primary/20 rounded-full text-sm"
-                      >
-                        {variant}
-                      </span>
-                    ))}
-                  </div>
-                </Card>
+                <DetailCard title="Variante:">
+                  <TagList items={selectedComponent.variants} variant="primary" />
+                </DetailCard>
               )}
             </div>
 
             {/* Features */}
-            <Card variant="default" padding="md">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                Caracteristici:
-              </h3>
-              <StaggerChildren className="space-y-2">
-                {selectedComponent.features.map((feature, index) => (
-                  <motion.li
-                    key={index}
-                    className="flex items-start space-x-2 list-none"
-                  >
-                    <span className="text-primary mt-0.5">•</span>
-                    <span className="text-sm text-gray-600 dark:text-gray-300">
-                      {feature}
-                    </span>
-                  </motion.li>
-                ))}
-              </StaggerChildren>
-            </Card>
+            <DetailCard title="Caracteristici:">
+              <FeatureList features={selectedComponent.features} animate />
+            </DetailCard>
 
             {/* Category Badge */}
             <div className="flex items-center justify-between pt-4 border-t dark:border-gray-700">

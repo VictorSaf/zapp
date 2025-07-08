@@ -6,6 +6,7 @@ import { Select } from '../ui/Select'
 import { Checkbox } from '../ui/Checkbox'
 import { AnimatedCard } from '../ui/AnimatedCard'
 import { Card, CardHeader, CardTitle, CardBadge, CardDescription, CardFooter, CardContent } from '../ui/Card'
+import { DetailCard, TagList, FeatureList, InfoGrid, SectionCard } from '../ui/DetailCard'
 import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { AnimatedTabs, TabPanel } from '../ui/AnimatedTabs'
 import { AnimatedLoader } from '../ui/AnimatedLoader'
@@ -111,8 +112,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
             </div>
 
             {/* Live Preview with Selected Variant */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Preview cu varianta selectată:</p>
+            <DetailCard title="Preview cu varianta selectată:">
               <div className="flex flex-wrap gap-3 items-center">
                 <Button variant={selectedButtonVariant} size={selectedButtonSize}>
                   Button Normal
@@ -124,7 +124,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
                   Loading
                 </Button>
               </div>
-            </div>
+            </DetailCard>
 
             {/* All Variants Display */}
             <div>
@@ -895,6 +895,176 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ componentNam
               }}
               isOwn={false}
             />
+          </div>
+        )
+
+      case 'DetailCard':
+        return (
+          <div className="space-y-6">
+            {/* Preview Examples */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Exemple de DetailCard cu conținut diferit:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <DetailCard title="Informații Sistem">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Versiune</span>
+                      <span className="font-semibold">2.1.0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Ultimul update</span>
+                      <span className="font-semibold">Acum 2 ore</span>
+                    </div>
+                  </div>
+                </DetailCard>
+
+                <DetailCard title="Statistici">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">1,234</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Total utilizatori</div>
+                  </div>
+                </DetailCard>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'TagList':
+        return (
+          <div className="space-y-6">
+            {/* All Variants Display */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Toate variantele TagList:</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium mb-2">Default variant:</p>
+                  <TagList items={['Dashboard', 'Settings', 'Profile', 'Analytics']} />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium mb-2">Primary variant:</p>
+                  <TagList items={['primary', 'secondary', 'outline', 'ghost']} variant="primary" />
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium mb-2">Code variant:</p>
+                  <TagList items={['onClick', 'variant', 'size', 'disabled', 'loading']} variant="code" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'FeatureList':
+        return (
+          <div className="space-y-6">
+            {/* Examples */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">FeatureList cu și fără animații:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">Fără animații:</h4>
+                  <FeatureList features={[
+                    'Layout responsive',
+                    'Dark mode support',
+                    'Accessibility compliant',
+                    'Fast performance'
+                  ]} />
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-3">Cu animații:</h4>
+                  <FeatureList 
+                    features={[
+                      'Animații smooth',
+                      'Stagger children effects',
+                      'Interactive hover states',
+                      'Loading transitions'
+                    ]} 
+                    animate 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'InfoGrid':
+        return (
+          <div className="space-y-6">
+            {/* Examples */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">InfoGrid pentru afișarea datelor:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">Statistici Utilizatori:</h4>
+                  <InfoGrid items={[
+                    { label: 'Total Users', value: '1,234' },
+                    { label: 'Active Today', value: '89', valueClassName: 'text-green-600' },
+                    { label: 'New This Week', value: '23', valueClassName: 'text-blue-600' },
+                    { label: 'Bounce Rate', value: '12%', valueClassName: 'text-yellow-600' }
+                  ]} />
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-3">Performance Metrici:</h4>
+                  <InfoGrid items={[
+                    { label: 'Response Time', value: '120ms', valueClassName: 'text-green-600' },
+                    { label: 'Uptime', value: '99.9%', valueClassName: 'text-green-600' },
+                    { label: 'Error Rate', value: '0.1%', valueClassName: 'text-red-600' },
+                    { label: 'Memory Usage', value: '45%' }
+                  ]} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'SectionCard':
+        return (
+          <div className="space-y-6">
+            {/* Examples */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">SectionCard cu diferite configurații:</p>
+              
+              <div className="space-y-4">
+                <SectionCard title="Dashboard Overview" icon="📊">
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Aceasta este o secțiune cu icon și conținut simplu.
+                  </p>
+                </SectionCard>
+
+                <SectionCard 
+                  title="User Management" 
+                  icon="👥"
+                  actions={
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm">Export</Button>
+                      <Button variant="primary" size="sm">Add User</Button>
+                    </div>
+                  }
+                >
+                  <InfoGrid items={[
+                    { label: 'Total Users', value: '1,234' },
+                    { label: 'Active Today', value: '89' },
+                    { label: 'Pending Invites', value: '12' }
+                  ]} />
+                </SectionCard>
+
+                <SectionCard title="Recent Activity">
+                  <FeatureList features={[
+                    'User John Doe logged in',
+                    'New component created: Button',
+                    'Settings updated by Admin',
+                    'Backup completed successfully'
+                  ]} />
+                </SectionCard>
+              </div>
+            </div>
           </div>
         )
 
