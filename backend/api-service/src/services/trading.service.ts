@@ -345,6 +345,43 @@ export class TradingService {
       const winRate = stats.total_trades > 0 ? (stats.winning_trades / stats.total_trades) * 100 : 0;
       const profitFactor = stats.avg_loss !== 0 ? Math.abs(stats.avg_win / stats.avg_loss) : 0;
 
+      // Get performance history for risk metrics
+      const perfResult = await client.query(
+        `SELECT daily_return, ending_balance
+         FROM portfolio_performance
+         WHERE account_id = $1
+         ORDER BY date`,
+        [accountId]
+      );
+
+      const dailyReturns = perfResult.rows.map(r => parseFloat(r.daily_return));
+
+      // Calculate Sharpe ratio
+      let sharpeRatio = 0;
+      if (dailyReturns.length > 1) {
+        const avgReturn = dailyReturns.reduce((sum, r) => sum + r, 0) / dailyReturns.length;
+        const variance = dailyReturns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / dailyReturns.length;
+        const stdDev = Math.sqrt(variance);
+        const riskFreeRate = 0.02 / 252; // 2% annual risk-free rate
+        if (stdDev > 0) {
+          sharpeRatio = ((avgReturn - riskFreeRate) / stdDev) * Math.sqrt(252);
+        }
+      }
+
+      // Calculate max drawdown based on ending balances
+      let peak = 0;
+      let maxDrawdown = 0;
+      perfResult.rows.forEach(row => {
+        const balance = parseFloat(row.ending_balance);
+        if (balance > peak) {
+          peak = balance;
+        }
+        const dd = peak - balance;
+        if (dd > maxDrawdown) {
+          maxDrawdown = dd;
+        }
+      });
+
       return {
         totalValue: parseFloat(account.current_balance),
         totalPnl: parseFloat(stats.total_pnl || 0),
@@ -355,8 +392,8 @@ export class TradingService {
         totalTrades: parseInt(stats.total_trades),
         winRate,
         profitFactor,
-        sharpeRatio: 0, // TODO: Calculate Sharpe ratio
-        maxDrawdown: 0, // TODO: Calculate max drawdown
+        sharpeRatio,
+        maxDrawdown,
       };
     } finally {
       client.release();
