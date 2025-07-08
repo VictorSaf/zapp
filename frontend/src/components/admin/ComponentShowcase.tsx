@@ -4,7 +4,9 @@ import { componentRegistry, getComponentsByCategory, ComponentInfo } from '../..
 import { AnimatedCard } from '../ui/AnimatedCard'
 import { AnimatedModal, ModalFooter } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
+import { Input } from '../ui/Input'
 import { StaggerChildren } from '../animations'
+import { ComponentPreview } from './ComponentPreview'
 import { cn } from '../../utils/cn'
 
 const categoryColors = {
@@ -43,185 +45,174 @@ export const ComponentShowcase: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Caută componente..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={cn(
-              "w-full px-4 py-2 rounded-lg",
-              "bg-white dark:bg-gray-800",
-              "border border-gray-300 dark:border-gray-600",
-              "focus:outline-none focus:ring-2 focus:ring-primary/20",
-              "transition-all duration-200"
-            )}
-          />
+      <AnimatedCard variant="default" className="p-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <Input
+              type="text"
+              placeholder="Caută componente..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              label=""
+            />
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {categories.map(cat => (
+              <Button
+                key={cat}
+                variant={selectedCategory === cat ? "primary" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat === 'all' ? 'Toate' : categoryLabels[cat]}
+              </Button>
+            ))}
+          </div>
         </div>
-        
-        <div className="flex flex-wrap gap-2">
-          {categories.map(cat => (
-            <motion.button
-              key={cat}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedCategory(cat)}
-              className={cn(
-                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200",
-                selectedCategory === cat
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-              )}
-            >
-              {cat === 'all' ? 'Toate' : categoryLabels[cat]}
-            </motion.button>
-          ))}
-        </div>
-      </div>
+      </AnimatedCard>
 
       {/* Components Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <StaggerChildren staggerDelay={0.05}>
-          {filteredComponents.map((component) => (
-            <motion.div
-              key={component.name}
-              whileHover={{ y: -4 }}
-              onClick={() => setSelectedComponent(component)}
-            >
-              <AnimatedCard 
-                variant="interactive" 
-                className="h-full cursor-pointer"
-              >
-                <div className="p-4 space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{component.icon}</span>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {component.name}
-                        </h3>
-                        <span className={cn(
-                          "inline-block px-2 py-0.5 text-xs rounded-full mt-1",
-                          categoryColors[component.category]
-                        )}>
-                          {categoryLabels[component.category]}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                    {component.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Folosit în {component.usedIn.length} pagini
+      <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredComponents.map((component) => (
+          <AnimatedCard 
+            key={component.name}
+            variant="interactive" 
+            className="h-full cursor-pointer"
+            onClick={() => setSelectedComponent(component)}
+          >
+            <div className="p-4 space-y-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">{component.icon}</span>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {component.name}
+                    </h3>
+                    <span className={cn(
+                      "inline-block px-2 py-0.5 text-xs rounded-full mt-1",
+                      categoryColors[component.category]
+                    )}>
+                      {categoryLabels[component.category]}
                     </span>
-                    {component.variants && (
-                      <span className="text-gray-500 dark:text-gray-400">
-                        {component.variants.length} variante
-                      </span>
-                    )}
                   </div>
                 </div>
-              </AnimatedCard>
-            </motion.div>
-          ))}
-        </StaggerChildren>
-      </div>
+              </div>
+              
+              <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                {component.description}
+              </p>
+              
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Folosit în {component.usedIn.length} pagini
+                </span>
+                {component.variants && (
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {component.variants.length} variante
+                  </span>
+                )}
+              </div>
+            </div>
+          </AnimatedCard>
+        ))}
+      </StaggerChildren>
 
       {/* Component Details Modal */}
       <AnimatedModal
         isOpen={!!selectedComponent}
         onClose={() => setSelectedComponent(null)}
         title={selectedComponent?.name || ''}
-        size="lg"
+        size="xl"
       >
         {selectedComponent && (
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center space-x-4">
-              <span className="text-4xl">{selectedComponent.icon}</span>
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {selectedComponent.name}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {selectedComponent.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Used In Pages */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                Folosit în paginile:
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedComponent.usedIn.map(page => (
-                  <span
-                    key={page}
-                    className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm"
-                  >
-                    {page}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Props */}
-            {selectedComponent.props && (
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                  Props disponibile:
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedComponent.props.map(prop => (
-                    <code
-                      key={prop}
-                      className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono"
-                    >
-                      {prop}
-                    </code>
-                  ))}
+            <AnimatedCard variant="default" className="p-4">
+              <div className="flex items-center space-x-4">
+                <span className="text-4xl">{selectedComponent.icon}</span>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {selectedComponent.name}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {selectedComponent.description}
+                  </p>
                 </div>
               </div>
-            )}
+            </AnimatedCard>
 
-            {/* Variants */}
-            {selectedComponent.variants && (
-              <div>
+            {/* Component Preview */}
+            <ComponentPreview componentName={selectedComponent.name} />
+
+            {/* Component Details Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Used In Pages */}
+              <AnimatedCard variant="default" className="p-4">
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                  Variante:
+                  Folosit în paginile:
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {selectedComponent.variants.map(variant => (
+                  {selectedComponent.usedIn.map(page => (
                     <span
-                      key={variant}
-                      className="px-3 py-1 bg-primary/10 text-primary dark:bg-primary/20 rounded-full text-sm"
+                      key={page}
+                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm"
                     >
-                      {variant}
+                      {page}
                     </span>
                   ))}
                 </div>
-              </div>
-            )}
+              </AnimatedCard>
+
+              {/* Props */}
+              {selectedComponent.props && (
+                <AnimatedCard variant="default" className="p-4">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                    Props disponibile:
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedComponent.props.map(prop => (
+                      <code
+                        key={prop}
+                        className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono"
+                      >
+                        {prop}
+                      </code>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              )}
+
+              {/* Variants */}
+              {selectedComponent.variants && (
+                <AnimatedCard variant="default" className="p-4">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                    Variante:
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedComponent.variants.map(variant => (
+                      <span
+                        key={variant}
+                        className="px-3 py-1 bg-primary/10 text-primary dark:bg-primary/20 rounded-full text-sm"
+                      >
+                        {variant}
+                      </span>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              )}
+            </div>
 
             {/* Features */}
-            <div>
+            <AnimatedCard variant="default" className="p-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
                 Caracteristici:
               </h3>
-              <ul className="space-y-2">
+              <StaggerChildren className="space-y-2">
                 {selectedComponent.features.map((feature, index) => (
                   <motion.li
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="flex items-start space-x-2"
+                    className="flex items-start space-x-2 list-none"
                   >
                     <span className="text-primary mt-0.5">•</span>
                     <span className="text-sm text-gray-600 dark:text-gray-300">
@@ -229,8 +220,8 @@ export const ComponentShowcase: React.FC = () => {
                     </span>
                   </motion.li>
                 ))}
-              </ul>
-            </div>
+              </StaggerChildren>
+            </AnimatedCard>
 
             {/* Category Badge */}
             <div className="flex items-center justify-between pt-4 border-t dark:border-gray-700">
