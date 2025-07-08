@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { ollamaService, OllamaMessage } from './ollama.service';
 
 export interface AIMessage {
@@ -73,8 +74,23 @@ export class OpenAIProvider implements AIProvider {
   name = 'openai';
 
   async isAvailable(): Promise<boolean> {
-    // TODO: Check OpenAI API key and connectivity
-    return false; // Disabled for now
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return false;
+    }
+
+    try {
+      const response = await axios.get('https://api.openai.com/v1/models', {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        timeout: 5000,
+      });
+      return response.status === 200;
+    } catch (error: any) {
+      console.warn('OpenAI connectivity check failed:', error?.response?.status || error.message);
+      return false;
+    }
   }
 
   async chat(
@@ -86,8 +102,37 @@ export class OpenAIProvider implements AIProvider {
       top_p?: number;
     }
   ): Promise<string> {
-    // TODO: Implement OpenAI API integration
-    throw new Error('OpenAI provider not implemented yet');
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY is not set');
+    }
+
+    try {
+      const openaiMessages = messages.map(m => ({ role: m.role, content: m.content }));
+
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model,
+          messages: openaiMessages,
+          temperature: options?.temperature ?? 0.7,
+          max_tokens: options?.max_tokens ?? 512,
+          top_p: options?.top_p ?? 1,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          timeout: 60000,
+        }
+      );
+
+      return response.data.choices?.[0]?.message?.content?.trim() || '';
+    } catch (error: any) {
+      console.error('OpenAI chat failed:', error?.response?.data || error.message);
+      throw new Error('Failed to get chat response from OpenAI');
+    }
   }
 }
 
@@ -95,8 +140,23 @@ export class AnthropicProvider implements AIProvider {
   name = 'anthropic';
 
   async isAvailable(): Promise<boolean> {
-    // TODO: Check Anthropic API key and connectivity
-    return false; // Disabled for now
+    const apiKey = process.env.CLAUDE_API_KEY;
+    if (!apiKey) {
+      return false;
+    }
+
+    try {
+      const response = await axios.get('https://api.anthropic.com/v1/models', {
+        headers: {
+          'x-api-key': apiKey,
+        },
+        timeout: 5000,
+      });
+      return response.status === 200;
+    } catch (error: any) {
+      console.warn('Anthropic connectivity check failed:', error?.response?.status || error.message);
+      return false;
+    }
   }
 
   async chat(
@@ -108,8 +168,37 @@ export class AnthropicProvider implements AIProvider {
       top_p?: number;
     }
   ): Promise<string> {
-    // TODO: Implement Anthropic API integration
-    throw new Error('Anthropic provider not implemented yet');
+    const apiKey = process.env.CLAUDE_API_KEY;
+    if (!apiKey) {
+      throw new Error('CLAUDE_API_KEY is not set');
+    }
+
+    try {
+      const anthropicMessages = messages.map(m => ({ role: m.role, content: m.content }));
+
+      const response = await axios.post(
+        'https://api.anthropic.com/v1/messages',
+        {
+          model,
+          max_tokens: options?.max_tokens ?? 512,
+          temperature: options?.temperature ?? 0.7,
+          messages: anthropicMessages,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          timeout: 60000,
+        }
+      );
+
+      return response.data?.content?.[0]?.text?.trim() || '';
+    } catch (error: any) {
+      console.error('Anthropic chat failed:', error?.response?.data || error.message);
+      throw new Error('Failed to get chat response from Anthropic');
+    }
   }
 }
 
