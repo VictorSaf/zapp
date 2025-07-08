@@ -10,16 +10,14 @@ import { AnimatedModal, ModalFooter } from '../components/ui/AnimatedModal'
 import { AnimatedTooltip, IconTooltip } from '../components/ui/AnimatedTooltip'
 import { AnimatedTabs, TabPanel } from '../components/ui/AnimatedTabs'
 import { AnimatedLoader, SkeletonLoader } from '../components/ui/AnimatedLoader'
-import { ThemeSwitcher } from '../components/ui/ThemeSwitcher'
-import { ScrollProgress } from '../components/ui/ScrollProgress'
+import { Header } from '../components/layout'
 import { cn } from '../utils/cn'
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate()
-  const { user, isAuthenticated, logout, loadUser } = useAuthStore()
+  const { user, isAuthenticated, loadUser } = useAuthStore()
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [isLoadingActivity, setIsLoadingActivity] = useState(true)
-  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     // Load user data if we have a token but no user data
@@ -49,20 +47,6 @@ export const Dashboard: React.FC = () => {
 
     return () => clearTimeout(timer)
   }, [user, isAuthenticated, navigate, loadUser])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleLogout = async () => {
-    await logout()
-    navigate('/login')
-  }
 
   if (!user) {
     return (
@@ -127,78 +111,13 @@ export const Dashboard: React.FC = () => {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-        {/* Scroll Progress Indicator */}
-        <ScrollProgress />
-        
-        {/* Header */}
-        <motion.header 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={cn(
-            "sticky top-0 z-40 transition-all duration-300",
-            "bg-white dark:bg-gray-800 border-b dark:border-gray-700",
-            isScrolled ? [
-              "shadow-md backdrop-blur-lg",
-              "bg-white/90 dark:bg-gray-800/90",
-              "border-gray-200/50 dark:border-gray-700/50"
-            ] : [
-              "shadow-sm",
-              "bg-white/95 dark:bg-gray-800/95"
-            ]
-          )}>
-        <div className={cn(
-          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300",
-          isScrolled ? "py-3" : "py-4"
-        )}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{config.APP_NAME}</h1>
-              <span className="text-gray-500 dark:text-gray-400 transition-colors">Dashboard</span>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <ThemeSwitcher variant="buttons" showLabel={false} />
-              
-              {user.is_admin && (
-                <AnimatedTooltip content="Setări Admin">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate('/settings')}
-                    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-all duration-200 group"
-                  >
-                    <svg className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-primary dark:group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </motion.button>
-                </AnimatedTooltip>
-              )}
-              
-              <div className="text-right mr-2">
-                <p className="text-sm text-gray-500 dark:text-gray-400">Bine ai venit,</p>
-                <p className="font-medium text-gray-900 dark:text-white flex items-center justify-end">
-                  {user.first_name} {user.last_name}
-                  {user.is_admin && (
-                    <span className="ml-2 px-2 py-0.5 text-xs bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary rounded-full">
-                      Admin
-                    </span>
-                  )}
-                </p>
-              </div>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-              >
-                Deconectare
-              </Button>
-            </div>
-          </div>
-        </div>
-        </motion.header>
+        <Header 
+          title={`${config.APP_NAME} - Dashboard`}
+          showThemeSwitcher={true}
+          showAdminButton={true}
+          showUserInfo={true}
+          showLogout={true}
+        />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
