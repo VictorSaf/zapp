@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { chatService } from '../services/chat.service'
 
 export interface Message {
   id: string
@@ -137,13 +138,31 @@ export const useChatStore = create<ChatStore>()(
         // Conversation actions
         setConversations: (conversations) => set({ conversations }),
         
-        setActiveConversation: (conversation) => {
-          set({ activeConversation: conversation })
-          
-          if (conversation) {
-            // Clear current messages and load conversation messages
-            set({ messages: [] })
-            // TODO: Load messages from API
+        setActiveConversation: async (conversation) => {
+          if (!conversation) {
+            set({ activeConversation: null, messages: [] })
+            return
+          }
+
+          // clear messages before fetching
+          set({ messages: [] })
+
+          try {
+            const messages = await chatService.getMessages(conversation.id)
+            set({
+              activeConversation: conversation,
+              messages: messages.map((m) => ({
+                id: m.id,
+                content: m.content,
+                role: m.role,
+                timestamp: new Date(m.createdAt),
+                agent: m.agentId,
+                conversationId: m.conversationId
+              }))
+            })
+          } catch (error) {
+            console.error('Failed to load messages:', error)
+            set({ activeConversation: conversation })
           }
         },
         
