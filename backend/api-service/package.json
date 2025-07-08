@@ -7,7 +7,7 @@
     "dev": "nodemon --exec ts-node -P tsconfig.dev.json src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "echo \"No linter configured yet\"",
     "clean": "rm -rf dist"
   },
@@ -52,6 +52,9 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "@types/jest": "^29.5.11",
+    "jest": "^30.0.4",
+    "ts-jest": "^29.1.1"
   }
 }
