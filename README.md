@@ -93,8 +93,8 @@ cd backend/ai-orchestrator && npm run dev
 
 ## 📊 Status Dezvoltare
 
-**Versiune Curentă:** v1.0-dev  
-**Următorul Milestone:** Setup infrastructură de bază
+**Versiune Curentă:** v2.0  
+**Următorul Milestone:** FAZA 7
 
 Vezi [`implementare.md`](./implementare.md) pentru progresul detaliat.
 
