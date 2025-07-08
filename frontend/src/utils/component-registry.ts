@@ -176,6 +176,40 @@ export const componentRegistry: ComponentInfo[] = [
     icon: '📑'
   },
   {
+    name: 'AccessibleCard',
+    category: 'ui',
+    description: 'Card component optimizat pentru accesibilitate cu rapoarte de contrast WCAG AA',
+    props: ['variant', 'padding', 'contrast', 'onClick', 'aria-label', 'role'],
+    usedIn: ['ComponentPreview', 'Settings', 'Dashboard'],
+    features: [
+      'Contrast ratios WCAG AA compliant (4.5:1+)',
+      'Mod high contrast pentru accesibilitate sporită',
+      'Focus states îmbunătățite cu ring visible',
+      'Suport pentru screen readers',
+      'Navigare cu keyboard (Enter/Space)',
+      'Semantic HTML cu heading levels',
+      'Variante: default, interactive, outline, elevated'
+    ],
+    variants: ['default', 'interactive', 'outline', 'elevated'],
+    icon: '♿'
+  },
+  {
+    name: 'PreviewCard',
+    category: 'ui',
+    description: 'Card specializat pentru preview-uri de componente cu contrast îmbunătățit',
+    props: ['title', 'children', 'className'],
+    usedIn: ['ComponentPreview'],
+    features: [
+      'Background solid pentru contrast optim',
+      'Text colors optimizate pentru legibilitate',
+      'Border colors cu contrast îmbunătățit',
+      'Semantic heading pentru title',
+      'Shadow effects pentru depth perception',
+      'Focus management pentru accesibilitate'
+    ],
+    icon: '🔍'
+  },
+  {
     name: 'AnimatedModal',
     category: 'feedback',
     description: 'Modal dialog cu backdrop și animații',

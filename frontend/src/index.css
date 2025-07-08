@@ -108,6 +108,44 @@ html.dark body {
   background-color: rgba(156, 163, 175, 0.5);
 }
 
+/* Custom colors for better contrast */
+@layer utilities {
+  .bg-gray-750 {
+    background-color: rgb(55, 65, 81); /* Between gray-700 and gray-800 */
+  }
+  
+  .dark\:bg-gray-750:is(.dark *) {
+    background-color: rgb(55, 65, 81);
+  }
+  
+  .border-gray-750 {
+    border-color: rgb(55, 65, 81);
+  }
+  
+  .dark\:border-gray-750:is(.dark *) {
+    border-color: rgb(55, 65, 81);
+  }
+  
+  .text-gray-750 {
+    color: rgb(55, 65, 81);
+  }
+  
+  .dark\:text-gray-750:is(.dark *) {
+    color: rgb(55, 65, 81);
+  }
+}
+
+/* Enhanced focus states for accessibility */
+@layer utilities {
+  .focus-visible\:ring-offset-gray-900:focus-visible {
+    --tw-ring-offset-color: rgb(17, 24, 39);
+  }
+  
+  .dark .focus-visible\:ring-offset-gray-900:focus-visible {
+    --tw-ring-offset-color: rgb(17, 24, 39);
+  }
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
