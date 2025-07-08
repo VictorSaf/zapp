@@ -28,7 +28,7 @@ export const AnimatedModal: React.FC<AnimatedModalProps> = ({
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
-    xl: 'max-w-xl',
+    xl: 'max-w-4xl',
     full: 'max-w-full mx-4'
   }
 
@@ -55,7 +55,7 @@ export const AnimatedModal: React.FC<AnimatedModalProps> = ({
             className={cn(
               "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50",
               "bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6",
-              "w-full",
+              "w-full max-h-[90vh] overflow-y-auto custom-scrollbar",
               sizeClasses[size],
               className
             )}
